@@ -102,20 +102,22 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 	public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
 		fixStandalonePOM(session.getCurrentProject(), new File(session.getRequest().getBaseDirectory()));
 
+		// plugin manager and properties manager
 		propertiesManager = CommonMojo.propertiesManager(session, session.getCurrentProject());
 		PluginConfigurator.propertiesManager = propertiesManager;
+		PluginManager.registerCustomPluginManager(pluginManager, new BW6MojosFactory()); // to inject Global Parameters in Mojos
+		PropertiesEnforcer.setCustomProperty(session, "sampleProfileCommandLine", GenerateGlobalParametersDocMojo.standaloneGenerator(session.getCurrentProject(), this.getClass()).getFullSampleProfileForCommandLine("tic-bw6", "| ")); // TODO: retrieve artifactId with pluginDescriptor
 
 		setStudioVersion(session);
 		CommonTIBCOMojo.setJreVersions(session, propertiesManager);
 
-		List<MavenProject> projects = prepareProjects(session.getProjects(), session.getProjectBuildingRequest(), session);
-		session.setProjects(projects);
-		PluginConfigurator.propertiesManager.setProject(session.getCurrentProject());
+//		if (!skipPrepareProjects(session)) {
+			List<MavenProject> projects = prepareProjects(session.getProjects(), session.getProjectBuildingRequest(), session);
+			session.setProjects(projects);
+			PluginConfigurator.propertiesManager.setProject(session.getCurrentProject());
+//		}
 
 		customizeGoalsExecutions(session);
-		PropertiesEnforcer.setCustomProperty(session, "sampleProfileCommandLine", GenerateGlobalParametersDocMojo.standaloneGenerator(session.getCurrentProject(), this.getClass()).getFullSampleProfileForCommandLine("tic-bw6", "| ")); // TODO: retrieve artifactId with pluginDescriptor
-
-		PluginManager.registerCustomPluginManager(pluginManager, new BW6MojosFactory()); // to inject Global Parameters in Mojos
 
 		if (!skipRules(session)) {
 			PropertiesEnforcer.enforceProperties(session, pluginManager, logger, new ArrayList<String>(), BW6LifecycleParticipant.class); // check that all mandatory properties are correct
@@ -135,6 +137,7 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 		}
 
 		restoreManifests(); // the "prepare-module-meta" goal will do the version replacement if configured to do so (mandatory to have a valid format for the version to resolve dependencies)
+
 		session.getUserProperties().put("tycho.mode", "maven"); // to avoid duplicate call of TychoMavenLifecycleParticipant.afterProjectsRead()
 	}
 
@@ -156,6 +159,9 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 			}
 		}
 
+		if (bw6Version != null) {
+			PropertiesEnforcer.setCustomProperty(session, BW6MojoInformation.BW6.bwVersion, bw6Version);
+		}
 		if (studioVersion != null) {
 			PropertiesEnforcer.setCustomProperty(session, BW6MojoInformation.Studio.studioVersion, studioVersion);
 		}

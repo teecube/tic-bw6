@@ -532,6 +532,11 @@ public class BW6PackagingConvertor {
 	}
 
 	private void addP2Repository(File p2Repository, String p2PropertyName) throws UnknownRepositoryLayoutException  {
+		if (p2Repository == null) return;
+		if (p2Repository.list().length <= 0) {
+			logger.debug("p2 repository '" + p2Repository.getAbsolutePath() + "' is empty. Skipping.");
+			return;
+		}
 		if (artifactRepositoryFactory != null) {
 			ArtifactRepository artifactRepository = artifactRepositoryFactory.createArtifactRepository(
 			p2PropertyName,
@@ -705,9 +710,13 @@ public class BW6PackagingConvertor {
 
 			String key = bw6Module.getGroupId()+":"+bw6Module.getArtifactId()+":"+bw6Module.getVersion()+":eclipse-plugin";
 			List<Dependency> transitiveDependencies = projectDependencies.get(key);
-			for (Dependency d : transitiveDependencies) {
-				System.out.println(d.getArtifactId());
-				mavenProject.getModel().addDependency(d);
+			if (transitiveDependencies != null) {
+				for (Dependency d : transitiveDependencies) {
+					System.out.println(d.getArtifactId());
+					mavenProject.getModel().addDependency(d);
+				}
+			} else {
+				this.logger.debug("No transitive dependency found in current project");
 			}
 		}
 
