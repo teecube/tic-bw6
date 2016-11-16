@@ -190,7 +190,8 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 			if (goal.endsWith(":add-module") ||
 				goal.endsWith(":remove-module") ||
 				goal.endsWith(":p2maven-install") ||
-				goal.endsWith(":studio-proxy-install")) {
+				goal.endsWith(":studio-proxy-install") ||
+				goal.startsWith("toe:")) {
 				return true;
 			}
 		}

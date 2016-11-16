@@ -729,6 +729,7 @@ public class BW6PackagingConvertor {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		writer.write(baos, mavenProject.getModel());
 		String model = baos.toString();
+		// TODO : use StringSource instead
 		StringModelSource modelSource = new StringModelSource(model);
 
 		// recreate a MavenProject from the hacked model

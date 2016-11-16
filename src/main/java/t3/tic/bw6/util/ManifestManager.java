@@ -144,7 +144,7 @@ public class ManifestManager {
 				Matcher m2 = p2.matcher(capabilityFilter);
 				if (capabilityType.equals("com.tibco.bw.module") && m2.matches()) {
 					String capabilityName = m2.group(1);
-					String capabilityVersion = m2.group(2);
+//					String capabilityVersion = m2.group(2);
 
 					if (capabilityName.equals(capability)) {
 						it.remove();

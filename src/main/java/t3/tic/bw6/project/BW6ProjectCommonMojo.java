@@ -17,7 +17,11 @@
 package t3.tic.bw6.project;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import t3.plugin.annotations.GlobalParameter;
 import t3.tic.bw6.BW6CommonMojo;
 import t3.tic.bw6.BW6MojoInformation;
@@ -68,4 +72,26 @@ public abstract class BW6ProjectCommonMojo extends BW6CommonMojo {
 	@GlobalParameter (property = BW6MojoInformation.BW6Project.dotProject, defaultValue = BW6MojoInformation.BW6Project.dotProject_default, category = BW6MojoInformation.BW6Project.category, required = true)
 	protected File dotProject;
 
+	/**
+	 * @return a list of all files with ".substvar" extension in "META-INF" folder of the project.
+	 */
+	protected List<File> getAllSubstVarFiles() {
+		FileFilter substVarFilter = new FileFilter() {
+			@Override
+			public boolean accept(File file) {
+				return file.getName().toLowerCase().endsWith(".substvar");
+			}
+		};
+
+		File[] substVarFiles = metaInfSource.listFiles(substVarFilter);
+
+		List<File> result = new ArrayList<File>();
+		List<?> substVarFilesList = Arrays.asList(substVarFiles);
+		for (Object substVarFileObject : substVarFilesList) {
+			File substVarFile = (File) substVarFileObject;
+			result.add(substVarFile);
+		}
+
+		return result;
+	}
 }

@@ -17,8 +17,12 @@
 package t3.tic.bw6.project.application.modules;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apache.maven.model.Model;
@@ -31,10 +35,13 @@ import com.tibco.schemas.tra.model.core.packagingmodel.Module;
 import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Modules;
 import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Properties;
 import com.tibco.schemas.tra.model.core.packagingmodel.Property;
+import com.tibco.xmlns.repo.types._2002.Repository.GlobalVariables;
+import com.tibco.xmlns.repo.types._2002.Repository.GlobalVariables.GlobalVariable;
 
 import t3.POMManager;
 import t3.plugin.annotations.Mojo;
 import t3.tic.bw6.BW6LifecycleParticipant;
+import t3.tic.bw6.util.SubstVarMarshaller;
 
 /**
  * <p>
@@ -85,6 +92,45 @@ public class AddModuleMojo extends CommonModule {
 			p.setScalable(Boolean.parseBoolean(scalable));
 			p.setOverrideValue(false);
 			packageUnit.getObject().getProperties().getProperty().add(p);
+		}
+
+		List<File> substVarFiles = getAllSubstVarFiles();
+		for (File substVarFile : substVarFiles) {
+			SubstVarMarshaller substVarMarshaller;
+			try {
+				substVarMarshaller = new SubstVarMarshaller(substVarFile);
+
+				GlobalVariables globalVariables = substVarMarshaller.getObject().getGlobalVariables();
+				if (globalVariables == null) {
+					substVarMarshaller.getObject().setGlobalVariables(new GlobalVariables());
+					globalVariables = substVarMarshaller.getObject().getGlobalVariables();
+				}
+
+				for (PropertyType property : moduleComposite.getObject().getProperty()) {
+					GlobalVariable gv = new GlobalVariable();
+					String type = property.getType().getLocalPart();
+					if (type != null && type.length() > 0) {
+						type = type.substring(0, 1).toUpperCase() + type.substring(1); // Capitalize first letter
+					}
+
+					gv.setName("//" + moduleSymbolicName + "//" + property.getName());
+					if (property.getName().endsWith("BW.HOST.NAME")) {
+						gv.setValue("localhost");
+					} else {
+						gv.setValue("");
+					}
+					gv.setDeploymentSettable(false);
+					gv.setServiceSettable(false);
+					gv.setType(type);
+					gv.setIsOverride(false);
+
+					globalVariables.getGlobalVariable().add(gv);
+				}
+
+				substVarMarshaller.save();
+			} catch (JAXBException | UnsupportedEncodingException | FileNotFoundException e) {
+				throw new MojoExecutionException(e.getLocalizedMessage(), e);
+			}
 		}
 
 		getLog().info("Adding module '" + moduleSymbolicName + ":" + moduleVersion + "' in application.");

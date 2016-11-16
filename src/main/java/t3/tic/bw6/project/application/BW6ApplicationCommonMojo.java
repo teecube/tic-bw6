@@ -81,7 +81,9 @@ public abstract class BW6ApplicationCommonMojo extends BW6ProjectCommonMojo {
 					request.setRemoteRepositories(session.getRequest().getRemoteRepositories());
 					//request.setRemoteRepositories(remoteRepositories);
 					ArtifactResolutionResult r = resolver.resolve(request);
-					// TODO: check result!
+					if (r.isSuccess()) {
+						getLog().debug("Successfully resolved artifact '" + artifact.getGroupId() + ":" + artifact.getArtifactId() + "'");
+					}
 					
 					if (artifact.getFile() == null || !artifact.getFile().exists()) {
 						throw new MojoExecutionException(Messages.DEPENDENCY_RESOLUTION_FAILED, new FileNotFoundException());
