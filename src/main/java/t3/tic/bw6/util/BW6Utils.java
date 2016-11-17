@@ -34,6 +34,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.tibco.xmlns.repo.types._2002.GlobalVariable;
+import com.tibco.xmlns.repo.types._2002.GlobalVariables;
+
 import t3.tic.bw6.BW6CommonMojo;
 import t3.tic.bw6.BW6Constants;
 
@@ -67,6 +70,18 @@ public class BW6Utils {
 		default:
 			return false;
 		}
+	}
+
+	public static boolean globalVariableExists(GlobalVariables globalVariables, String globalVariableName) {
+		if (globalVariables == null || globalVariableName == null) return false;
+
+		for (GlobalVariable gv : globalVariables.getGlobalVariable()) {
+			if (globalVariableName.equals(gv.getName())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static File updateTIBCOXMLVersion(File tibcoXML, Map<String, String> modulesVersions) throws Exception {

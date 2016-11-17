@@ -191,6 +191,7 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 				goal.endsWith(":remove-module") ||
 				goal.endsWith(":p2maven-install") ||
 				goal.endsWith(":studio-proxy-install") ||
+				goal.startsWith("archetype:") ||
 				goal.startsWith("toe:")) {
 				return true;
 			}
@@ -317,11 +318,14 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 
 	public static boolean hasBadParentDefinition(MavenProject parent, String module) throws IOException, XmlPullParserException {
 		Model moduleModel = POMManager.getModelOfModule(parent, module);
+
+		if (moduleModel != null && moduleModel.getParent() == null) return false; // no parent so can't be bad
+
 		return (moduleModel != null &&
 				parent.getGroupId().equals(moduleModel.getParent().getGroupId()) &&
 				parent.getArtifactId().equals(moduleModel.getParent().getArtifactId()) &&
 				parent.getVersion().equals(moduleModel.getParent().getVersion())
-				);
+			   );
 	}
 
 	/**

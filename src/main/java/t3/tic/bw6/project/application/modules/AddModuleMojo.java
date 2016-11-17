@@ -35,12 +35,13 @@ import com.tibco.schemas.tra.model.core.packagingmodel.Module;
 import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Modules;
 import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Properties;
 import com.tibco.schemas.tra.model.core.packagingmodel.Property;
-import com.tibco.xmlns.repo.types._2002.Repository.GlobalVariables;
-import com.tibco.xmlns.repo.types._2002.Repository.GlobalVariables.GlobalVariable;
+import com.tibco.xmlns.repo.types._2002.GlobalVariable;
+import com.tibco.xmlns.repo.types._2002.GlobalVariables;
 
 import t3.POMManager;
 import t3.plugin.annotations.Mojo;
 import t3.tic.bw6.BW6LifecycleParticipant;
+import t3.tic.bw6.util.BW6Utils;
 import t3.tic.bw6.util.SubstVarMarshaller;
 
 /**
@@ -107,13 +108,16 @@ public class AddModuleMojo extends CommonModule {
 				}
 
 				for (PropertyType property : moduleComposite.getObject().getProperty()) {
+					String gvName = "//" + moduleSymbolicName + "//" + property.getName();
+					if (BW6Utils.globalVariableExists(globalVariables, gvName)) continue;
+
 					GlobalVariable gv = new GlobalVariable();
 					String type = property.getType().getLocalPart();
 					if (type != null && type.length() > 0) {
 						type = type.substring(0, 1).toUpperCase() + type.substring(1); // Capitalize first letter
 					}
 
-					gv.setName("//" + moduleSymbolicName + "//" + property.getName());
+					gv.setName(gvName);
 					if (property.getName().endsWith("BW.HOST.NAME")) {
 						gv.setValue("localhost");
 					} else {

@@ -16,8 +16,14 @@
  */
 package t3.tic.bw6.project.application.modules;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -25,9 +31,12 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import com.tibco.schemas.tra.model.core.packagingmodel.Module;
 import com.tibco.schemas.tra.model.core.packagingmodel.Property;
+import com.tibco.xmlns.repo.types._2002.GlobalVariable;
+import com.tibco.xmlns.repo.types._2002.GlobalVariables;
 
 import t3.POMManager;
 import t3.plugin.annotations.Mojo;
+import t3.tic.bw6.util.SubstVarMarshaller;
 
 /**
  * <p>
@@ -50,23 +59,68 @@ public class RemoveModuleMojo extends CommonModule {
 					moduleVersion.equals(module.getTechnologyVersion())) {
 					iterator.remove();
 					found = true;
-					getLog().info("Removing module '" + moduleSymbolicName + ":" + moduleVersion + "' from application.");
 					break;
-				}
-			}
-		}
-		if (packageUnit.getObject().getProperties() != null) {
-			for (Iterator<Property> iterator = packageUnit.getObject().getProperties().getProperty().iterator(); iterator.hasNext();) {
-				Property property = iterator.next();
-				
-				if (property.getName().startsWith("//" + moduleSymbolicName + "//")) {
-					iterator.remove();
 				}
 			}
 		}
 
 		if (!found) {
-			getLog().warn("Module to remove not found.");
+			getLog().warn("Module to remove not found in application package unit '" + packageUnit.getXMLFile().getAbsolutePath() + "'.");
+		} else {
+			getLog().info("Removing module '" + moduleSymbolicName + ":" + moduleVersion + "' from application package unit '" + packageUnit.getXMLFile().getAbsolutePath() + "'.");
+		}
+
+		getLog().info(t3.Messages.MESSAGE_SPACE);
+
+		if (packageUnit.getObject().getProperties() != null) {
+			getLog().info("Removing properties starting with '//" + moduleSymbolicName + "//' from application package unit '" + packageUnit.getXMLFile().getAbsolutePath() + "'.");
+
+			Integer propertiesRemovedCount = 0;
+
+			for (Iterator<Property> iterator = packageUnit.getObject().getProperties().getProperty().iterator(); iterator.hasNext();) {
+				Property property = iterator.next();
+
+				if (property.getName().startsWith("//" + moduleSymbolicName + "//")) {
+					iterator.remove();
+					propertiesRemovedCount++;
+				}
+			}
+
+			getLog().info("Removed " + propertiesRemovedCount.toString() + " properties.");
+			getLog().info(t3.Messages.MESSAGE_SPACE);
+		}
+
+		List<File> substVarFiles = getAllSubstVarFiles();
+		for (File substVarFile : substVarFiles) {
+			SubstVarMarshaller substVarMarshaller;
+			try {
+				substVarMarshaller = new SubstVarMarshaller(substVarFile);
+
+				GlobalVariables globalVariables = substVarMarshaller.getObject().getGlobalVariables();
+				if (globalVariables == null) {
+					continue;
+				}
+
+				getLog().info("Removing properties starting with '//" + moduleSymbolicName + "//' from profile '" + substVarMarshaller.getXMLFile().getAbsolutePath() + "'.");
+
+				Integer propertiesRemovedCount = 0;
+
+				for (Iterator<GlobalVariable> iterator = globalVariables.getGlobalVariable().iterator(); iterator.hasNext();) {
+					GlobalVariable gv = iterator.next();
+
+					if (gv.getName().startsWith("//" + moduleSymbolicName + "//")) {
+						iterator.remove();
+						propertiesRemovedCount++;
+					}
+				}
+
+				substVarMarshaller.save();
+
+				getLog().info("Removed " + propertiesRemovedCount.toString() + " properties.");
+				getLog().info(t3.Messages.MESSAGE_SPACE);
+			} catch (JAXBException | UnsupportedEncodingException | FileNotFoundException e) {
+				throw new MojoExecutionException(e.getLocalizedMessage(), e);
+			}
 		}
 
 		removeModuleInApplication();

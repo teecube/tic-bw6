@@ -666,6 +666,11 @@ public class BW6PackagingConvertor {
 			try {
 				Model model = POMManager.getModelOfModule(mavenProject, module);
 
+				if (model == null) {
+					logger.warn("Module '" + module + "' is declared in POM '" + mavenProject.getFile().getAbsolutePath() + "' but not found. Skipping.");
+					continue;
+				}
+
 				if (BW6CommonMojo.BW6_APP_MODULE_PACKAGING.equals(model.getPackaging()) || // TODO: add OSGi ?
 					BW6CommonMojo.BW6_SHARED_MODULE_PACKAGING.equals(model.getPackaging())) {
 					result.add(model);
