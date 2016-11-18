@@ -86,6 +86,7 @@ import t3.tic.bw6.util.ManifestManager;
  * @author Mathieu Debove &lt;mad@teecu.be&gt;
  *
  */
+@SuppressWarnings("deprecation")
 public class BW6PackagingConvertor {
 
 	private Logger logger;
@@ -532,7 +533,7 @@ public class BW6PackagingConvertor {
 	}
 
 	private void addP2Repository(File p2Repository, String p2PropertyName) throws UnknownRepositoryLayoutException  {
-		if (p2Repository == null) return;
+		if (p2Repository == null || !p2Repository.exists() || !p2Repository.isDirectory()) return;
 		if (p2Repository.list().length <= 0) {
 			logger.debug("p2 repository '" + p2Repository.getAbsolutePath() + "' is empty. Skipping.");
 			return;
@@ -568,6 +569,11 @@ public class BW6PackagingConvertor {
 		String p2Repository = propertiesManager.replaceProperties(propertiesManager.replaceProperties(value));
 
 		File result = new File(p2Repository);
+
+		if (p2Repository != null && p2Repository.contains("${")) {
+			return result;
+		}
+
 		if (!result.exists()) {
 			result.mkdirs();
 		}

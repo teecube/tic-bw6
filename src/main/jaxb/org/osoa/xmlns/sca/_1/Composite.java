@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -62,6 +63,7 @@ import org.w3c.dom.Element;
     "wire",
     "any"
 })
+@XmlRootElement(name = "composite", namespace = "http://www.osoa.org/xmlns/sca/1.0")
 public class Composite {
 
     @XmlSchemaType(name = "anyURI")

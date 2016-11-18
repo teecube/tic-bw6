@@ -8,7 +8,7 @@
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://www.osoa.org/xmlns/sca/1.0",
 									 xmlns={@XmlNs(namespaceURI = "http://www.osoa.org/xmlns/sca/1.0", prefix = "sca"),
 											@XmlNs(namespaceURI = "http://www.omg.org/XMI", prefix = "xmi"),
-											@XmlNs(namespaceURI = "http://www.omg.org/XMI-instance", prefix = "xsi"),
+											@XmlNs(namespaceURI = "http://www.w3.org/2001/XMLSchema-instance", prefix = "xsi"),
 											@XmlNs(namespaceURI = "http://xsd.tns.tibco.com/amf/models/sca/implementationtype/BW", prefix = "BW"),
 											@XmlNs(namespaceURI = "http://www.w3.org/2001/XMLSchema", prefix = "XMLSchema"),
 											@XmlNs(namespaceURI = "http://schemas.tibco.com/amx/3.0/compositeext", prefix = "compositeext"),

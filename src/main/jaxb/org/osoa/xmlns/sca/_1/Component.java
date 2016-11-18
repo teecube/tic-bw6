@@ -27,6 +27,8 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
+import com.tibco.tns.xsd.amf.models.sca.extensions.Implementation;
+
 
 /**
  * <p>Java class for Component complex type.
@@ -61,7 +63,7 @@ import org.w3c.dom.Element;
 })
 public class Component {
 
-    @XmlElement(required = true)
+    @XmlElement(required = true, type = Implementation.class, namespace = "http://xsd.tns.tibco.com/amf/models/sca/extensions", name = "implementation")
     protected Implementation implementation;
     protected List<Reference> reference;
     protected List<Property> property;

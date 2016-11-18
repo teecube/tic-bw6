@@ -19,7 +19,12 @@ package t3.tic.bw6.project;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import t3.plugin.annotations.GlobalParameter;
@@ -90,6 +95,25 @@ public abstract class BW6ProjectCommonMojo extends BW6CommonMojo {
 		for (Object substVarFileObject : substVarFilesList) {
 			File substVarFile = (File) substVarFileObject;
 			result.add(substVarFile);
+		}
+
+		return result;
+	}
+
+	/**
+	 * @return a list of all files with ".bwp" extension in {@code rootDirectory} directory.
+	 */
+	protected List<File> getAllBWPFiles(File rootDirectory) {
+		List<File> result = new ArrayList<File>();
+
+		if (rootDirectory == null || !rootDirectory.exists() || !rootDirectory.isDirectory()) {
+			return result;
+		}
+
+		Collection<File> bwpFiles = FileUtils.listFiles(rootDirectory, new RegexFileFilter("^.*\\.bwp"), DirectoryFileFilter.DIRECTORY);
+
+		for (File bwpFile : bwpFiles) {
+			result.add(bwpFile);
 		}
 
 		return result;

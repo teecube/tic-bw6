@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import com.tibco.tns.xsd.amf.models.sca.extensions.Implementation;
+
 
 /**
  * This object contains factory methods for each 
@@ -35,7 +37,7 @@ public class ObjectFactory {
     private final static QName _Composite_QNAME = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
     private final static QName _Interface_QNAME = new QName("http://www.osoa.org/xmlns/sca/1.0", "interface");
     private final static QName _Binding_QNAME = new QName("http://www.osoa.org/xmlns/sca/1.0", "binding");
-    private final static QName _Implementation_QNAME = new QName("http://www.osoa.org/xmlns/sca/1.0", "implementation");
+    private final static QName _Implementation_QNAME = new QName("http://xsd.tns.tibco.com/amf/models/sca/extensions", "implementation");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.osoa.xmlns.sca._1
