@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>tic-bw6</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<packaging>maven-plugin</packaging>
 
@@ -153,7 +153,7 @@
 		<connection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</connection>
 		<developerConnection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</developerConnection>
 		<url>https://git.teecu.be/teecube/tic-bw6.git</url>
-		<tag>tic-bw6/0.0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 </project>
