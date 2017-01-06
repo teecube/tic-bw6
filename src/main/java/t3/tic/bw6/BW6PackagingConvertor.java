@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -354,7 +354,7 @@ public class BW6PackagingConvertor {
 
 		List<Plugin> plugins = mavenProject.getBuild().getPlugins();
 		for (Plugin plugin : plugins) {
-			if ("tic-bw6".equals(plugin.getArtifactId())) { // FIXME: use a pluginDescriptor to identify self
+			if (BW6LifecycleParticipant.pluginArtifactId.equals(plugin.getArtifactId())) {
 				Object pluginConfiguration = plugin.getConfiguration();
 				String config = null;
 				if (pluginConfiguration != null) {
@@ -602,7 +602,7 @@ public class BW6PackagingConvertor {
 	private MavenProject prepareBW6Module() throws MojoExecutionException, IOException, XmlPullParserException, BundleException, UnknownRepositoryLayoutException {
 		mavenProject.setPackaging("eclipse-plugin"); // change packaging of the POM to "eclipse-plugin" (used by tycho plugins)
 
-		PluginConfigurator.updatePluginsConfiguration(mavenProject, session, true, BW6PackagingConvertor.class, logger);
+		PluginConfigurator.updatePluginsConfiguration(mavenProject, session, true, BW6PackagingConvertor.class, logger, BW6LifecycleParticipant.pluginKey);
 
 		processRequiredCapabilites(getRequiredCapabilities(mavenProject)); // will update builtinCapabilities and customCapabilities
 

@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 package t3.tic.bw6.project.module;
 
 import java.io.File;
+import java.util.List;
 
 import t3.plugin.annotations.GlobalParameter;
 import t3.tic.bw6.BW6MojoInformation;
@@ -46,5 +47,12 @@ public abstract class BW6ModuleCommonMojo extends BW6ProjectCommonMojo {
 
 	@GlobalParameter (property = BW6MojoInformation.BW6Module.buildPropertiesSource, defaultValue = BW6MojoInformation.BW6Module.buildPropertiesSource_default, category = BW6MojoInformation.BW6Module.category, required = true)
 	protected File buildPropertiesSource;
+
+	/**
+	 * @return a list of all processes files with ".bwp" extension in the module project.
+	 */
+	protected List<File> getAllProcessesFiles() {
+		return getAllBWPFiles(this.projectBasedir);
+	}
 
 }

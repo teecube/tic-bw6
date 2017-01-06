@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,6 +90,10 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 	@org.apache.maven.plugins.annotations.Component
 	protected PluginDescriptor pluginDescriptor; // plugin descriptor of this plugin
 
+	public final static String pluginGroupId = "io.teecube.tic";
+	public final static String pluginArtifactId = "tic-bw6";
+	public final static String pluginKey = BW6LifecycleParticipant.pluginGroupId + ":" +BW6LifecycleParticipant.pluginArtifactId;
+
 	private CommonMojo propertiesManager;
 
 	private Map<File, ByteArrayOutputStream> history;
@@ -106,7 +110,7 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 		propertiesManager = CommonMojo.propertiesManager(session, session.getCurrentProject());
 		PluginConfigurator.propertiesManager = propertiesManager;
 		PluginManager.registerCustomPluginManager(pluginManager, new BW6MojosFactory()); // to inject Global Parameters in Mojos
-		PropertiesEnforcer.setCustomProperty(session, "sampleProfileCommandLine", GenerateGlobalParametersDocMojo.standaloneGenerator(session.getCurrentProject(), this.getClass()).getFullSampleProfileForCommandLine("tic-bw6", "| ")); // TODO: retrieve artifactId with pluginDescriptor
+		PropertiesEnforcer.setCustomProperty(session, "sampleProfileCommandLine", GenerateGlobalParametersDocMojo.standaloneGenerator(session.getCurrentProject(), this.getClass()).getFullSampleProfileForCommandLine(BW6LifecycleParticipant.pluginArtifactId, "| "));
 
 		setStudioVersion(session);
 		CommonTIBCOMojo.setJreVersions(session, propertiesManager);
@@ -120,7 +124,7 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 		customizeGoalsExecutions(session);
 
 		if (!skipRules(session)) {
-			PropertiesEnforcer.enforceProperties(session, pluginManager, logger, new ArrayList<String>(), BW6LifecycleParticipant.class); // check that all mandatory properties are correct
+			PropertiesEnforcer.enforceProperties(session, pluginManager, logger, new ArrayList<String>(), BW6LifecycleParticipant.class, pluginKey); // check that all mandatory properties are correct
 		}
 
 		if (!skipPrepareProjects(session)) {

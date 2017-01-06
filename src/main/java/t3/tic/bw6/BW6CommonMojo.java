@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,9 @@
 package t3.tic.bw6;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -79,4 +82,16 @@ public abstract class BW6CommonMojo extends CommonTIBCOMojo {
 		return new BW6LifecycleParticipant();
 	}
 
+	protected int executeBusinessStudio(List<String> arguments, File workingDirectory, String errorMessage, boolean fork, boolean synchronous) throws MojoExecutionException, IOException {
+		return executeBinary(businessStudio, arguments, workingDirectory, errorMessage, fork, synchronous);
+	}
+
+	/**
+	 * <p>
+	 * Default behaviour is synchronous and no fork.
+	 * </p>
+	 */
+	protected int executeBusinessStudio(ArrayList<String> arguments, File workingDirectory, String errorMessage) throws IOException, MojoExecutionException {
+		return executeBusinessStudio(arguments, workingDirectory, errorMessage, false, true);
+	}
 }

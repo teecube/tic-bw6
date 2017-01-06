@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -130,7 +130,7 @@ public class WorkspaceMojo extends StudioCommon {
 //		arguments.add("-ignoreExisting");
 
 		try {
-			executeBinary(businessStudio, arguments, getSessionBasedir(), "fail to create workspace");
+			executeBusinessStudio(arguments, getSessionBasedir(), "fail to create workspace");
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getLocalizedMessage(), e);
 		}

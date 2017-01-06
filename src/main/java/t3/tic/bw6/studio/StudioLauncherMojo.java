@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,7 +92,7 @@ public class StudioLauncherMojo extends StudioCommon {
         }
 
 		try {
-			executeBinary(businessStudio, arguments, projectBasedir, "fail to launch Studio", true, true);
+			executeBusinessStudio(arguments, projectBasedir, "fail to launch Studio", true, true);
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getLocalizedMessage(), e);
 		}
