@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2016 teecube
+ * (C) Copyright 2016-2017 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,6 +93,12 @@ public class BW6MojoInformation {
 
 		public static final String bwInstallTimeOut = "tibco.bw6.bw.bwinstall.timeout";
 		public static final String bwInstallTimeOut_default = "1800";
+
+		public static final String eclipsePlatform = "tibco.bw6.eclipse.platform";
+		public static final String eclipsePlatform_default = "${tibco.home}/eclipse-platform/bundlepool/${tibco.bw6.eclipse.platform.version}";
+
+		public static final String eclipsePlatformVersion = "tibco.bw6.eclipse.platform.version";
+		public static final String eclipsePlatformVersion_default = "1.0";
 	}
 
 	public static class BW6Project {
@@ -143,6 +149,9 @@ public class BW6MojoInformation {
 
 		public static final String manifestVersionIsMaster = "tibco.bw6.project.module.manifestVersionIsMaster";
 		public static final String manifestVersionIsMaster_default = "false";
+
+		public static final String skipUpdate = "tibco.bw6.project.module.skipUpdate";
+		public static final String skipUpdate_default = "false";
 	}
 
 	public static class Studio {
