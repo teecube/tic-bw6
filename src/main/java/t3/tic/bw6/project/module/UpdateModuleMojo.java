@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -54,6 +55,11 @@ public class UpdateModuleMojo extends BW6ModuleCommonMojo implements OSGIEnabled
 
 	private Object resourceSet;
 
+	private File getDiagram(File bwpProcessFile) {
+		diagramsDirectory.mkdirs();
+		return new File(diagramsDirectory, getPackage(bwpProcessFile) + "." + FilenameUtils.removeExtension(bwpProcessFile.getName()) + ".bwd"); // TODO : externalize
+	}
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (updateBW6ModuleSkip) {
@@ -69,7 +75,7 @@ public class UpdateModuleMojo extends BW6ModuleCommonMojo implements OSGIEnabled
 				osgiClassLoader = this.getOSGIClassLoader();
 				prepareBW6Environment();
 				for (File processFile : processesFiles) {
-					generateProcessDiagram(processFile, new File(processFile.getAbsolutePath() + ".svg"));
+					generateProcessDiagram(processFile, getDiagram(processFile));
 				}
 			}
 		} catch (Exception e) {
@@ -174,25 +180,18 @@ public class UpdateModuleMojo extends BW6ModuleCommonMojo implements OSGIEnabled
 		Method m = URI_class.getDeclaredMethod("createFileURI", String.class);
 		Object uri = m.invoke(null, bwp.getAbsolutePath());
 
-//		ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
-		try {
-//			Thread.currentThread().setContextClassLoader(osgiClassLoader);;
+//		Resource resource = resourceSet.getResource(uri, true);
+		Method getResource_method = resourceSet.getClass().getSuperclass().getSuperclass().getDeclaredMethod("getResource", URI.class, boolean.class);
+		Object resource = getResource_method.invoke(resourceSet, uri, true);
 
-//			Resource resource = resourceSet.getResource(uri, true);
-			Method getResource_method = resourceSet.getClass().getSuperclass().getSuperclass().getDeclaredMethod("getResource", URI.class, boolean.class);
-			Object resource = getResource_method.invoke(resourceSet, uri, true);
+		Method getProcess_method = resource.getClass().getDeclaredMethod("getProcess", (Class<?>[]) null);
+		Object process = getProcess_method.invoke(resource, (Object[]) null);
 
-			Method getProcess_method = resource.getClass().getDeclaredMethod("getProcess", (Class<?>[]) null);
-			Object process = getProcess_method.invoke(resource, (Object[]) null);
-
-			Class<?> BWGenerateSVGServiceImpl_class = osgiClassLoader.loadClass("com.tibco.bw.core.design.svg.BWGenerateSVGServiceImpl");
-			Class<?> Process_class = osgiClassLoader.loadClass("org.eclipse.bpel.model.Process");
-			Method parseProcessDiagram_method = BWGenerateSVGServiceImpl_class.getDeclaredMethod("parseProcessDiagram", Process_class, File.class);
-			parseProcessDiagram_method.setAccessible(true);
-			parseProcessDiagram_method.invoke(BWGenerateSVGServiceImpl_class.newInstance(), process, svgFile);
-		} finally {
-//			Thread.currentThread().setContextClassLoader(oldClassloader);
-		}
+		Class<?> BWGenerateSVGServiceImpl_class = osgiClassLoader.loadClass("com.tibco.bw.core.design.svg.BWGenerateSVGServiceImpl");
+		Class<?> Process_class = osgiClassLoader.loadClass("org.eclipse.bpel.model.Process");
+		Method parseProcessDiagram_method = BWGenerateSVGServiceImpl_class.getDeclaredMethod("parseProcessDiagram", Process_class, File.class);
+		parseProcessDiagram_method.setAccessible(true);
+		parseProcessDiagram_method.invoke(BWGenerateSVGServiceImpl_class.newInstance(), process, svgFile);
 
 		getLog().debug("Saved SVG process diagram of '" + bwp + "' to '" + svgFile + "'");
 	}

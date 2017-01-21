@@ -92,7 +92,7 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 
 	public final static String pluginGroupId = "io.teecube.tic";
 	public final static String pluginArtifactId = "tic-bw6";
-	public final static String pluginKey = BW6LifecycleParticipant.pluginGroupId + ":" +BW6LifecycleParticipant.pluginArtifactId;
+	public final static String pluginKey = BW6LifecycleParticipant.pluginGroupId + ":" + BW6LifecycleParticipant.pluginArtifactId;
 
 	private CommonMojo propertiesManager;
 
