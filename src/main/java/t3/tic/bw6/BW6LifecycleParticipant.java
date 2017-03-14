@@ -143,6 +143,8 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 		restoreManifests(); // the "prepare-module-meta" goal will do the version replacement if configured to do so (mandatory to have a valid format for the version to resolve dependencies)
 
 		session.getUserProperties().put("tycho.mode", "maven"); // to avoid duplicate call of TychoMavenLifecycleParticipant.afterProjectsRead()
+		
+		CommonMojo.lifecyleParticipationProcessed = true;
 	}
 
 	private void setStudioVersion(MavenSession session) {
