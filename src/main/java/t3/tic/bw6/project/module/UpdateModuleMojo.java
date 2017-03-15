@@ -211,7 +211,7 @@ public class UpdateModuleMojo extends BW6ModuleCommonMojo implements OSGIEnabled
 												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.osgi.compatibility.state_*.jar",
 												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.equinox.common_*.jar",
 												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.core.jobs_*.jar",
-												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_*/",
+//												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_*/",
 												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.equinox.registry_*.jar",
 												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.equinox.preferences_*.jar",
 												   "${tibco.bw6.eclipse.platform}/org.eclipse.equinox.p2.touchpoint.eclipse/plugins/org.eclipse.core.contenttype_*.jar",
