@@ -127,7 +127,7 @@ public abstract class StudioProxy extends BW6CommonMojo {
 				plugin(
 					groupId("org.apache.maven.plugins"),
 					artifactId("maven-dependency-plugin"),
-					version("2.9") // version defined in pom.xml of this plugin
+					version("2.10") // version defined in pom.xml of this plugin
 				),
 				goal("copy"),
 				configuration(
