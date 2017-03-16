@@ -52,7 +52,7 @@
 				<skip>${bw6MavenSkip}</skip>
 			</requireFilesExist>
 			<requireFilesExist>
-				<message>The directory '${tibco.bw6.p2repository}' must be a p2 repository.</message>
+				<message>The directory '${tibco.bw6.p2repository}' must be a p2 repository (run 'mvn bw6:p2maven-install' to fix this)..</message>
 				<files>
 					<file>${tibco.bw6.p2repository}/artifacts.xml</file>
 					<file>${tibco.bw6.p2repository}/content.xml</file>
