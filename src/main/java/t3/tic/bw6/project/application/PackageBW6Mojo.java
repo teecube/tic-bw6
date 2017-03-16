@@ -36,6 +36,7 @@ import t3.CommonMojoInformation;
 import t3.plugin.annotations.GlobalParameter;
 import t3.plugin.annotations.Mojo;
 import t3.tic.bw6.BW6Artifact;
+import t3.tic.bw6.BW6MojoInformation;
 import t3.tic.bw6.Messages;
 
 /**
@@ -92,6 +93,8 @@ public class PackageBW6Mojo extends BW6ApplicationCommonMojo implements BW6Artif
 //
 
 	private void addApplication() throws ArchiverException, ManifestException, IOException, DependencyResolutionRequiredException, MojoExecutionException {
+		getLog().info("");
+
 		jarArchiver.addDirectory(metaInf, metaInf.getName() + File.separator); // add "target/META-INF/", already prepared by "prepare-application-meta"
 
 		mavenArchiver.setArchiver(jarArchiver);
@@ -130,6 +133,13 @@ public class PackageBW6Mojo extends BW6ApplicationCommonMojo implements BW6Artif
 				String moduleName = symbolicName + "_" + version + JAR_EXTENSION;
 				getLog().info(Messages.APPLICATION_ADDING_MODULE + moduleName);
 				jarArchiver.addFile(moduleJAR, moduleName);
+			}
+
+			String diagramsRelativePath = getPropertyValue(BW6MojoInformation.BW6Module.diagramsRelativePath);
+			File diagramsDirectory = new File(moduleJAR.getParentFile(), diagramsRelativePath);
+			if (diagramsDirectory.exists() && diagramsDirectory.isDirectory()) {
+				jarArchiver.addDirectory(diagramsDirectory, "resources/" + symbolicName + "/" + diagramsDirectory.getName() + "/");
+				getLog().info(Messages.APPLICATION_ADDING_DIAGRAMS + diagramsDirectory.getAbsolutePath());
 			}
 		}
 	}

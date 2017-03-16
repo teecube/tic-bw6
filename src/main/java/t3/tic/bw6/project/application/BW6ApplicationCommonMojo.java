@@ -70,16 +70,17 @@ public abstract class BW6ApplicationCommonMojo extends BW6ProjectCommonMojo {
 		List<String> resolved = new ArrayList<String>();
 		List<File> result = new ArrayList<File>();
 
+		ArtifactResolutionRequest request = new ArtifactResolutionRequest();
+		request.setLocalRepository(session.getRequest().getLocalRepository());
+		// TODO: manage remote repositories
+		request.setRemoteRepositories(session.getRequest().getRemoteRepositories());
+		//request.setRemoteRepositories(remoteRepositories);
+
 		for (Object a : project.getDependencyArtifacts()) { // dependencyArtifacts contains modules from Maven reactor
 			Artifact artifact = (Artifact) a;
 			if (BW6Utils.isBW6(artifact)) {
 				if (!"system".equals(artifact.getScope()) || artifact.getFile() == null || !artifact.getFile().exists()) {
-					ArtifactResolutionRequest request = new ArtifactResolutionRequest();
 					request.setArtifact(artifact);
-					request.setLocalRepository(session.getRequest().getLocalRepository());
-					// TODO: manage remote repositories
-					request.setRemoteRepositories(session.getRequest().getRemoteRepositories());
-					//request.setRemoteRepositories(remoteRepositories);
 					ArtifactResolutionResult r = resolver.resolve(request);
 					if (r.isSuccess()) {
 						getLog().debug("Successfully resolved artifact '" + artifact.getGroupId() + ":" + artifact.getArtifactId() + "'");

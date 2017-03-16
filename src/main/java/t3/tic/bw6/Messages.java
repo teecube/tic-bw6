@@ -34,6 +34,7 @@ public class Messages extends t3.Messages {
 
 	public static final String APPLICATION_PACKAGING = MESSAGE_PREFIX + "Packaging BW6 application (EAR)...";
 	public static final String APPLICATION_ADDING_MODULE = "Adding BW6 module: ";
+	public static final String APPLICATION_ADDING_DIAGRAMS = "Adding diagrams from: ";
 
 	public static final String BW6_MAVEN_INSTALL = "Installing BW6 Maven feature... (This might take some minutes)";
 	public static final String BW6_MAVEN_INSTALL_FAILED = "Failed to install BW6 Maven feature.";

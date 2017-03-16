@@ -54,6 +54,7 @@
 					</process-test-resources>
 					<package>
 						org.eclipse.tycho:target-platform-configuration:${tycho.version}:target-platform,
+						io.teecube.tic:tic-bw6:update-bw6-module,
 						org.eclipse.tycho:tycho-packaging-plugin:${tycho.version}:package-plugin,
 						org.eclipse.tycho:tycho-p2-plugin:${tycho.version}:p2-metadata-default
 					</package>
@@ -103,6 +104,7 @@
 					</process-test-resources>
 					<package>
 						org.eclipse.tycho:target-platform-configuration:${tycho.version}:target-platform,
+						io.teecube.tic:tic-bw6:update-bw6-module,
 						org.eclipse.tycho:tycho-packaging-plugin:${tycho.version}:package-plugin,
 						org.eclipse.tycho:tycho-p2-plugin:${tycho.version}:p2-metadata-default
 					</package>

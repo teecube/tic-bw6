@@ -152,6 +152,12 @@ public class BW6MojoInformation {
 
 		public static final String skipUpdate = "tibco.bw6.project.module.skipUpdate";
 		public static final String skipUpdate_default = "false";
+
+		public static final String diagramsRelativePath = "tibco.bw6.project.module.diagrams.relativePath";
+		public static final String diagramsRelativePath_default = "diagrams";
+
+		public static final String diagramsDirectory = "tibco.bw6.project.module.diagrams.directory";
+		public static final String diagramsDirectory_default = "${project.build.directory}/${tibco.bw6.project.module.diagrams.relativePath}";		
 	}
 
 	public static class Studio {

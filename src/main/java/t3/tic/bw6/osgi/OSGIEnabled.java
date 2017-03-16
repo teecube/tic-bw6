@@ -16,7 +16,10 @@
  */
 package t3.tic.bw6.osgi;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.util.List;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  *
@@ -25,6 +28,6 @@ import java.util.ArrayList;
  */
 public interface OSGIEnabled {
 
-	public ArrayList<String> getOSGIClasspathElements();
+	public List<File> getOSGIClasspathElements() throws MojoExecutionException;
 
 }

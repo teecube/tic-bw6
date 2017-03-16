@@ -17,6 +17,7 @@
 package t3.tic.bw6;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,20 +26,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.eclipse.tycho.core.resolver.shared.IncludeSourceMode;
+import org.eclipse.tycho.p2.target.facade.TargetDefinition.Location;
 
 import t3.AdvancedMavenLifecycleParticipant;
 import t3.CommonTIBCOMojo;
 import t3.plugin.annotations.GlobalParameter;
 import t3.tic.bw6.osgi.OSGIEnabled;
+import t3.tic.bw6.osgi.TargetDefinitionFile;
+import t3.tic.bw6.osgi.TargetDefinitionFile.OtherLocation;
 
 /**
  *
@@ -90,6 +93,9 @@ public abstract class BW6CommonMojo extends CommonTIBCOMojo {
 	@GlobalParameter (property = BW6MojoInformation.BW6.eclipsePlatform, defaultValue = BW6MojoInformation.BW6.eclipsePlatform_default, required = true, category = BW6MojoInformation.BW6.category)
 	protected File eclipsePlatformHome;
 
+	private File thorLaunchDirectory = null;
+	private ArrayList<File> designLocations = null;
+
 	public final static String BW6_APPLICATION_PACKAGING = "bw6-application";
 	public final static String BW6_APP_MODULE_PACKAGING = "bw6-app-module";
 	public final static String BW6_SHARED_MODULE_PACKAGING = "bw6-shared-module";
@@ -114,50 +120,57 @@ public abstract class BW6CommonMojo extends CommonTIBCOMojo {
 		return executeBusinessStudio(arguments, workingDirectory, errorMessage, false, true);
 	}
 
-	/* OSGI environment loader (independently of Eclipse platform) */
+	/* Thor launcher properties */
 
-	protected static Map<String, ClassLoader> osgiEnvironments = new HashMap<String, ClassLoader>();
-
-	private ClassLoader loadOSGIEnvironment(ArrayList<String> osgiDefaultClasspathElements) throws MalformedURLException, DependencyResolutionRequiredException {
-		for (ListIterator<String> iterator = osgiDefaultClasspathElements.listIterator(); iterator.hasNext();) {
-			String element = iterator.next();
-			String osgiDefaultClasspathElement = this.replaceProperties(element);
-
-			File actualFile = new File(osgiDefaultClasspathElement);
-			String relativePath = "";
-			File parent = actualFile;
-			do {
-				relativePath = parent.getName() + (relativePath.isEmpty() ? "" : "/" + relativePath);
-				parent = parent.getParentFile();
-			} while (parent != null && parent.getName().contains("*") && parent.getParentFile() != null);
-
-			if (parent == actualFile || parent == null) {
-				iterator.remove();
-				getLog().warn("OSGI environment loading - bundle not found : '" + element + "'");
-				continue;
-			};
-
-			while (relativePath.contains("/")) {
-				IOFileFilter wildcardFilter = new WildcardFileFilter(relativePath.substring(0, relativePath.indexOf("/")));
-				Collection<File> r = FileUtils.listFilesAndDirs(parent, wildcardFilter, wildcardFilter);
-				parent = r.toArray(new File[0])[1];
-				relativePath = relativePath.substring(relativePath.indexOf("/")+1);
-			}
-			Collection<File> r = FileUtils.listFiles(parent, new WildcardFileFilter(relativePath), TrueFileFilter.TRUE);
-			if (r.size() <= 0) {
-				iterator.remove();
-				getLog().warn("OSGI environment loading - bundle not found : '" + element + "'");
-				continue;
-			}
-			actualFile = r.toArray(new File[0])[0];
-			osgiDefaultClasspathElement = actualFile.getAbsolutePath();
-			iterator.set(osgiDefaultClasspathElement);
+	protected File getThorLaunchDirectory() throws FileNotFoundException {
+		if (thorLaunchDirectory != null) {
+			return thorLaunchDirectory;
 		}
 
+		File bundlePoolPlugins = new File(eclipsePlatformHome, "org.eclipse.equinox.p2.touchpoint.eclipse/plugins");
+		IOFileFilter wildcardFilter = new WildcardFileFilter("com.tibco.bw.thor.launch_*");
+
+		Collection<File> thorLaunchDirectories = FileUtils.listFilesAndDirs(bundlePoolPlugins, wildcardFilter, wildcardFilter);
+		if (thorLaunchDirectories.size() < 2) {
+			throw new FileNotFoundException("Unable to find Thor Launch directory");
+		}
+
+		thorLaunchDirectory = thorLaunchDirectories.toArray(new File[0])[1];
+		return thorLaunchDirectory;
+	}
+
+	protected File getThorLaunchDesignTarget() throws FileNotFoundException {
+		return new File(getThorLaunchDirectory(), "design.target");
+	}
+
+	protected List<File> getDesignLocations() throws FileNotFoundException {
+		if (designLocations != null) {
+			return designLocations;
+		}
+
+		designLocations = new ArrayList<File>();
+
+		TargetDefinitionFile targetDefinitionFile = TargetDefinitionFile.read(getThorLaunchDesignTarget(), IncludeSourceMode.force);
+		for (Location location : targetDefinitionFile.getLocations()) {
+			if (location instanceof OtherLocation) {
+				OtherLocation otherLocation = (TargetDefinitionFile.OtherLocation) location;
+				File actualLocation = new File(otherLocation.getPath().replaceAll("\\$\\{eclipse_home\\}", businessStudioHome.getAbsolutePath().replace("\\", "/")));
+				if (actualLocation.exists()) {
+					designLocations.add(actualLocation);
+				}
+			}
+		}
+
+		return designLocations;
+	}
+
+	/* OSGI environment loader (independently of Eclipse platform) */
+	protected static Map<String, ClassLoader> osgiEnvironments = new HashMap<String, ClassLoader>();
+
+	private ClassLoader loadOSGIEnvironment(List<File> osgiDefaultClasspathElements) throws MalformedURLException, DependencyResolutionRequiredException {
 		List<URL> osgiClasspathElements = new ArrayList<URL>();
 
-		for (String osgiDefaultClasspathElement : osgiDefaultClasspathElements) {
-			File osgiDefaultClasspathElementFile = new File(osgiDefaultClasspathElement);
+		for (File osgiDefaultClasspathElementFile : osgiDefaultClasspathElements) {
 			if (osgiDefaultClasspathElementFile.exists()) {
 				osgiClasspathElements.add(osgiDefaultClasspathElementFile.toURI().toURL());
 			}
