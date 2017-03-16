@@ -93,6 +93,8 @@ public class PackageBW6Mojo extends BW6ApplicationCommonMojo implements BW6Artif
 //
 
 	private void addApplication() throws ArchiverException, ManifestException, IOException, DependencyResolutionRequiredException, MojoExecutionException {
+		getLog().info("");
+
 		jarArchiver.addDirectory(metaInf, metaInf.getName() + File.separator); // add "target/META-INF/", already prepared by "prepare-application-meta"
 
 		mavenArchiver.setArchiver(jarArchiver);
