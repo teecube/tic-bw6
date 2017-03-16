@@ -165,45 +165,9 @@ public abstract class BW6CommonMojo extends CommonTIBCOMojo {
 	}
 
 	/* OSGI environment loader (independently of Eclipse platform) */
-
 	protected static Map<String, ClassLoader> osgiEnvironments = new HashMap<String, ClassLoader>();
 
 	private ClassLoader loadOSGIEnvironment(List<File> osgiDefaultClasspathElements) throws MalformedURLException, DependencyResolutionRequiredException {
-//		for (ListIterator<File> iterator = osgiDefaultClasspathElements.listIterator(); iterator.hasNext();) {
-//			File element = iterator.next();
-//			String osgiDefaultClasspathElement = this.replaceProperties(element.getAbsolutePath());
-//
-//			File actualFile = new File(osgiDefaultClasspathElement);
-//			String relativePath = "";
-//			File parent = actualFile;
-//			do {
-//				relativePath = parent.getName() + (relativePath.isEmpty() ? "" : "/" + relativePath);
-//				parent = parent.getParentFile();
-//			} while (parent != null && parent.getName().contains("*") && parent.getParentFile() != null);
-//
-//			if (parent == actualFile || parent == null) {
-//				iterator.remove();
-//				getLog().warn("OSGI environment loading - bundle not found : '" + element + "'");
-//				continue;
-//			};
-//
-//			while (relativePath.contains("/")) {
-//				IOFileFilter wildcardFilter = new WildcardFileFilter(relativePath.substring(0, relativePath.indexOf("/")));
-//				Collection<File> r = FileUtils.listFilesAndDirs(parent, wildcardFilter, wildcardFilter);
-//				parent = r.toArray(new File[0])[1];
-//				relativePath = relativePath.substring(relativePath.indexOf("/")+1);
-//			}
-//			Collection<File> r = FileUtils.listFiles(parent, new WildcardFileFilter(relativePath), TrueFileFilter.TRUE);
-//			if (r.size() <= 0) {
-//				iterator.remove();
-//				getLog().warn("OSGI environment loading - bundle not found : '" + element + "'");
-//				continue;
-//			}
-//			actualFile = r.toArray(new File[0])[0];
-//			osgiDefaultClasspathElement = actualFile.getAbsolutePath();
-//			iterator.set(element);
-//		}
-
 		List<URL> osgiClasspathElements = new ArrayList<URL>();
 
 		for (File osgiDefaultClasspathElementFile : osgiDefaultClasspathElements) {
