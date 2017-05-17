@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -13,7 +12,7 @@
 
 	<packaging>maven-plugin</packaging>
 
-	<name>${ecosystemName} - ${ticName} - ${ticBW6MavenName}</name> <!-- unleash: 2=<name>${ecosystemName} - ${ticName} - ${ticBW6MavenName}</name> 3=<name>&#36;{ecosystemName} - &#36;{ticName} - &#36;{ticBW6MavenName}</name> -->
+	<name>${projectName}</name> <!-- unleash: 2=<name>${projectName}</name> 3=<name>&#36;{projectName}</name> -->
 	<description>${projectDescription}</description> <!-- unleash: 2=<description>${projectDescription}</description> 3=<description>&#36;{projectDescription}</description> -->
 
 	<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> <!-- unleash: 2=<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> 3=<url>&#36;{siteDisplayURL}/&#36;{ticBW6MavenURLBase}</url> -->
@@ -25,9 +24,10 @@
 	</distributionManagement>
 
 	<properties>
+		<projectName>${ecosystemName} - ${ticName} - ${ticBW6MavenName}</projectName>
 		<projectDescription>${ticName} - ${ticBW6MavenName} is a Maven plugin defining the core lifecycles for TIBCO BusinessWorks 6 applications in order to package and deploy them and manage their configuration.</projectDescription>
 		<siteTopCaption>${ticDisplayedBW6MavenName}</siteTopCaption>
-		<siteTopLink />
+		<siteTopLink/>
 
 		<t3.site.globalDocumentation.bootstrapClass>t3.tic.bw6.BW6LifecycleParticipant</t3.site.globalDocumentation.bootstrapClass>
 		<t3.site.globalDocumentation.sampleProfileCommandLineGenerator><![CDATA[<p><em>To generate automatically a sample profile for an environment called <strong>BW6</strong> and <strong>add it automatically to the settings.xml of Maven</strong>, run : </em></p><div class="command" title="Sample profile for Maven settings.xml generator"><span id="command">mvn toe:bw6-configure</span><span class="argument">-Dtibco.installation.environmentName=BW6</span><span class="argument">-Dtibco.configuration.writeToSettings=true</span></div>]]></t3.site.globalDocumentation.sampleProfileCommandLineGenerator>
