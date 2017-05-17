@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -9,7 +8,7 @@
 	</parent>
 
 	<artifactId>tic-bw6</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 
 	<packaging>maven-plugin</packaging>
 
@@ -26,7 +25,7 @@
 
 	<properties>
 		<siteTopCaption>${ticDisplayedBW6MavenName}</siteTopCaption>
-		<siteTopLink />
+		<siteTopLink/>
 
 		<t3.site.globalDocumentation.bootstrapClass>t3.tic.bw6.BW6LifecycleParticipant</t3.site.globalDocumentation.bootstrapClass>
 		<t3.site.globalDocumentation.sampleProfileCommandLineGenerator><![CDATA[<p><em>To generate automatically a sample profile for an environment called <strong>BW6</strong> and <strong>add it automatically to the settings.xml of Maven</strong>, run : </em></p><div class="command" title="Sample profile for Maven settings.xml generator"><span id="command">mvn toe:bw6-configure</span><span class="argument">-Dtibco.installation.environmentName=BW6</span><span class="argument">-Dtibco.configuration.writeToSettings=true</span></div>]]></t3.site.globalDocumentation.sampleProfileCommandLineGenerator>
@@ -199,7 +198,7 @@
 		<connection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</connection>
 		<developerConnection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</developerConnection>
 		<url>https://git.teecu.be/teecube/tic-bw6</url>
-		<tag>HEAD</tag>
+		<tag>v0.0.3</tag>
 	</scm>
 
 </project>
