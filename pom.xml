@@ -13,10 +13,10 @@
 
 	<packaging>maven-plugin</packaging>
 
-	<name>${ecosystemName} - ${ticName} - ${ticBW6MavenName}</name>
-	<description>${ticName} - ${ticBW6MavenName} is a Maven plugin defining the core lifecycles for TIBCO BusinessWorks 6 applications in order to package and deploy them and manage their configuration.</description>
+	<name>${ecosystemName} - ${ticName} - ${ticBW6MavenName}</name> <!-- unleash: 2=<name>${ecosystemName} - ${ticName} - ${ticBW6MavenName}</name> 3=<name>&#36;{ecosystemName} - &#36;{ticName} - &#36;{ticBW6MavenName}</name> -->
+	<description>${projectDescription}</description> <!-- unleash: 2=<description>${projectDescription}</description> 3=<description>&#36;{projectDescription}</description> -->
 
-	<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url>
+	<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> <!-- unleash: 2=<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> 3=<url>&#36;{siteDisplayURL}/&#36;{ticBW6MavenURLBase}</url> -->
 	<distributionManagement>
 		<site>
 			<id>t3.site</id>
@@ -25,6 +25,7 @@
 	</distributionManagement>
 
 	<properties>
+		<projectDescription>${ticName} - ${ticBW6MavenName} is a Maven plugin defining the core lifecycles for TIBCO BusinessWorks 6 applications in order to package and deploy them and manage their configuration.</projectDescription>
 		<siteTopCaption>${ticDisplayedBW6MavenName}</siteTopCaption>
 		<siteTopLink />
 
