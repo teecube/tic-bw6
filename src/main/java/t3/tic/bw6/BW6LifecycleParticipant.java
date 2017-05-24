@@ -156,10 +156,12 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 				studioVersion = "3.6";
 				break;
 			case "6.3":
+			case "6.4":
 				studioVersion = "4.0";
 				break;
 
 			default:
+				studioVersion = "4.0"; // assume next minor versions will have the same Studio version
 				break;
 			}
 		}
