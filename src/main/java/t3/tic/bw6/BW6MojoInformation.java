@@ -172,7 +172,7 @@ public class BW6MojoInformation {
 		public static final String studioHome_description = "The path where TIBCO BusinessStudio is installed.";
 
 		public static final String studio = "tibco.bw6.studio";
-		public static final String studio_default = "${tibco.bw6.studio.home}/TIBCOBusinessStudio.exe";
+		public static final String studio_default = "${tibco.bw6.studio.home}/TIBCOBusinessStudio${executables.extension}";
 		public static final String studio_description = "The path of TIBCO BusinessStudio binary (used to launch Eclipse).";
 
 		public static final String studioProxyGroupId = "tibco.bw6.studio.proxyGroupId";
