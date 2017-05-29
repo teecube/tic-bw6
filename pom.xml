@@ -8,14 +8,14 @@
 	</parent>
 
 	<artifactId>tic-bw6</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.5</version>
 
 	<packaging>maven-plugin</packaging>
 
-	<name>${projectName}</name> <!-- unleash: 2=<name>${projectName}</name> 3=<name>&#36;{projectName}</name> -->
-	<description>${projectDescription}</description> <!-- unleash: 2=<description>${projectDescription}</description> 3=<description>&#36;{projectDescription}</description> -->
+	<name>T³ - TIC - BW6 Maven plugin</name> <!-- unleash: 2=<name>${projectName}</name> 3=<name>&#36;{projectName}</name> -->
+	<description>TIC - BW6 Maven plugin is a Maven plugin defining the core lifecycles for TIBCO BusinessWorks 6 applications in order to package and deploy them and manage their configuration.</description> <!-- unleash: 2=<description>${projectDescription}</description> 3=<description>&#36;{projectDescription}</description> -->
 
-	<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> <!-- unleash: 2=<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> 3=<url>&#36;{siteDisplayURL}/&#36;{ticBW6MavenURLBase}</url> -->
+	<url>https://teecu.be/t3/0.0.5//../tic-bw6/${ticBW6MavenVersion}</url> <!-- unleash: 2=<url>${siteDisplayURL}/${ticBW6MavenURLBase}</url> 3=<url>&#36;{siteDisplayURL}/&#36;{ticBW6MavenURLBase}</url> -->
 	<distributionManagement>
 		<site>
 			<id>t3.site</id>
@@ -200,7 +200,7 @@
 		<connection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</connection>
 		<developerConnection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</developerConnection>
 		<url>https://git.teecu.be/teecube/tic-bw6</url>
-		<tag>HEAD</tag>
+		<tag>v0.0.5</tag>
 	</scm>
 
 </project>
