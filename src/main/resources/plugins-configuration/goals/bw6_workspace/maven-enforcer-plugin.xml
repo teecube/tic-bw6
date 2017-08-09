@@ -22,9 +22,9 @@
 	<configuration>
 		<rules combine.children="append">
 			<requireFilesExist>
-				<message>A file like '${tibco.bw6.studio.home}/plugins/*studio-proxy-plugin_${tibco.bw6.studio.version}.jar' must exist (run 'mvn bw6:studio-proxy-install' to fix this).</message>
+				<message>The file '${tibco.bw6.studio.home}/plugins/tic-bw6-studio-proxy-plugin_${tibco.bw6.studio.version}.${tibco.bw6.studio.proxyVersion}.jar' must exist (run 'mvn bw6:studio-proxy-install' to fix this).</message>
 				<files>
-					<file>${tibco.bw6.studio.home}/plugins/*studio-proxy-plugin_${tibco.bw6.studio.version}.jar</file>
+					<file>${tibco.bw6.studio.home}/plugins/tic-bw6-studio-proxy-plugin_${tibco.bw6.studio.version}.${tibco.bw6.studio.proxyVersion}.jar</file>
 				</files>
 				<skip>${bw6MavenSkip}</skip>
 			</requireFilesExist>

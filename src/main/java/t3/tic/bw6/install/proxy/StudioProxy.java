@@ -16,14 +16,6 @@
  */
 package t3.tic.bw6.install.proxy;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +24,6 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 import t3.plugin.annotations.Parameter;
 import t3.tic.bw6.BW6CommonMojo;
@@ -107,34 +98,8 @@ public abstract class StudioProxy extends BW6CommonMojo {
 	protected abstract String getInfoMessage();
 
 	private void retrieveStudioProxyArtifact(File outputDirectory) throws MojoExecutionException {
-		ArrayList<Element> configuration = new ArrayList<Element>();
-
-		List<Element> options = new ArrayList<>();
-		options.add(new Element("groupId", proxyGroupId));
-		options.add(new Element("artifactId", proxyArtifactId));
-		options.add(new Element("version", businessStudioVersion + "." + proxyVersion));
-		options.add(new Element("type", "zip"));
-		options.add(new Element("outputDirectory", outputDirectory.getAbsolutePath()));
-		options.add(new Element("destFileName", "repo.zip"));
-		Element artifactItem = new Element("artifactItem", options.toArray(new Element[0]));
-		Element artifactItems = new Element("artifactItems", artifactItem);
-
-		configuration.add(artifactItems);
-		configuration.add(new Element("silent", "true"));
-
 		try {
-			executeMojo(
-				plugin(
-					groupId("org.apache.maven.plugins"),
-					artifactId("maven-dependency-plugin"),
-					version("2.10") // version defined in pom.xml of this plugin
-				),
-				goal("copy"),
-				configuration(
-					configuration.toArray(new Element[0])
-				),
-				getEnvironment()
-			);
+			copyDependency(proxyGroupId, proxyArtifactId, businessStudioVersion + "." + proxyVersion, "zip", outputDirectory, "repo.zip");
 		} catch (MojoExecutionException e) {
 			// TODO: explain the problem about the proxy dependency not found 
 			throw new MojoExecutionException(e.getLocalizedMessage(), e);

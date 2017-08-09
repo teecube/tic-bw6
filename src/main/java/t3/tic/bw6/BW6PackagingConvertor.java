@@ -138,7 +138,7 @@ public class BW6PackagingConvertor {
 	 * @throws MojoExecutionException 
 	 */
 	protected void processRequiredCapabilites(List<String> capabilities) throws MojoExecutionException {
-		if (capabilities == null || capabilities.equals("")) return;
+		if (capabilities == null || capabilities.isEmpty()) return;
 
 		for (String capability : capabilities) {
 			String id = BW6Constants.capabilities.get(capability); // try to get plugin from hardcoded values 
