@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
+import org.xml.sax.SAXException;
 import t3.plugin.annotations.Parameter;
 import t3.tic.bw6.BW6MojoInformation;
 import t3.tic.bw6.BW6PackagingConvertor;
@@ -113,7 +114,7 @@ public abstract class CommonModule extends BW6ApplicationCommonMojo {
 			if (updateModule(moduleSymbolicName, moduleVersion, moduleComposite, packageUnit)) {
 				packageUnit.saveWithoutFilter();
 			}
-		} catch (JAXBException | UnsupportedEncodingException | FileNotFoundException e) {
+		} catch (JAXBException | SAXException | UnsupportedEncodingException | FileNotFoundException e) {
 			throw new MojoExecutionException(e.getLocalizedMessage(), e);
 		}
 		

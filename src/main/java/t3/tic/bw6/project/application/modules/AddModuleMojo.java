@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,7 @@ import com.tibco.schemas.tra.model.core.packagingmodel.Property;
 import com.tibco.xmlns.repo.types._2002.GlobalVariable;
 import com.tibco.xmlns.repo.types._2002.GlobalVariables;
 
+import org.xml.sax.SAXException;
 import t3.POMManager;
 import t3.Utils;
 import t3.plugin.annotations.Mojo;
@@ -156,7 +157,7 @@ public class AddModuleMojo extends CommonModule {
 				}
 
 				substVarMarshaller.save();
-			} catch (JAXBException | UnsupportedEncodingException | FileNotFoundException e) {
+			} catch (JAXBException | SAXException | UnsupportedEncodingException | FileNotFoundException e) {
 				throw new MojoExecutionException(e.getLocalizedMessage(), e);
 			}
 		}

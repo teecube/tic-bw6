@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,12 @@ import javax.xml.bind.JAXBException;
 import org.osoa.xmlns.sca._1.Composite;
 import org.osoa.xmlns.sca._1.ObjectFactory;
 
+import org.xml.sax.SAXException;
 import t3.xml.XMLMarshall;
 
 public class ModuleComponentsMarshaller extends XMLMarshall<Composite, ObjectFactory> {
 
-	public ModuleComponentsMarshaller(File xmlFile) throws JAXBException {
+	public ModuleComponentsMarshaller(File xmlFile) throws JAXBException, SAXException {
 		super(xmlFile, ObjectFactory.class, com.tibco.tns.xsd.amf.models.sca.extensions.ObjectFactory.class);
 
 		this.rootElementLocalName = "composite";

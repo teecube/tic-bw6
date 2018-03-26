@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,12 @@ import javax.xml.bind.JAXBException;
 import com.tibco.schemas.tra.model.core.packagingmodel.ObjectFactory;
 import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit;
 
+import org.xml.sax.SAXException;
 import t3.xml.XMLMarshall;
 
 public class PackageUnitMarshaller extends XMLMarshall<PackageUnit, ObjectFactory> {
 
-	public PackageUnitMarshaller(File xmlFile) throws JAXBException {
+	public PackageUnitMarshaller(File xmlFile) throws JAXBException, SAXException {
 		super(xmlFile);
 
 		this.rootElementLocalName = "packageUnit";

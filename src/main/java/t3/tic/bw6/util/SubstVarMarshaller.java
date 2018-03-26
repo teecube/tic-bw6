@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,11 +24,12 @@ import javax.xml.bind.JAXBException;
 import com.tibco.xmlns.repo.types._2002.ObjectFactory;
 import com.tibco.xmlns.repo.types._2002.Repository;
 
+import org.xml.sax.SAXException;
 import t3.xml.XMLMarshall;
 import t3.xml.RootElementNamespaceFilter.NamespaceDeclaration;
 
 public class SubstVarMarshaller extends XMLMarshall<Repository, ObjectFactory> {
-	public SubstVarMarshaller(File xmlFile) throws JAXBException {
+	public SubstVarMarshaller(File xmlFile) throws JAXBException, SAXException {
 		super(xmlFile);
 
 		this.rootElementLocalName = "repository";
