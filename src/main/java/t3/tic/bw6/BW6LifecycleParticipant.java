@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,30 +16,16 @@
  */
 package t3.tic.bw6;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
@@ -47,9 +33,10 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.tycho.core.maven.TychoMavenLifecycleParticipant;
-
+import org.eclipse.tycho.core.osgitools.BundleReader;
+import org.eclipse.tycho.resolver.TychoResolver;
 import t3.AdvancedMavenLifecycleParticipant;
-import t3.CommonMojo;
+import t3.CommonMavenLifecycleParticipant;
 import t3.CommonTIBCOMojo;
 import t3.POMManager;
 import t3.plugin.PluginConfigurator;
@@ -58,57 +45,66 @@ import t3.plugin.PropertiesEnforcer;
 import t3.site.GenerateGlobalParametersDocMojo;
 import t3.tic.bw6.util.ManifestManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author Mathieu Debove &lt;mad@teecu.be&gt;
  *
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "TICBW6LifecycleParticipant")
-public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant implements AdvancedMavenLifecycleParticipant {
-
-    @Requirement
-    private PlexusContainer plexus;
-
-	@Requirement
-	private Logger logger;
-
-	@Requirement
-	private ArtifactRepositoryFactory artifactRepositoryFactory;
-
-	@Requirement
-	protected BuildPluginManager pluginManager;
-
-	@Requirement
-	protected ProjectBuilder projectBuilder;
-	
-	@Requirement
-	protected ArtifactResolver artifactResolver;
-
-	@Requirement
-	protected ArtifactHandler artifactHandler;
-
-	@org.apache.maven.plugins.annotations.Component
-	protected PluginDescriptor pluginDescriptor; // plugin descriptor of this plugin
+public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant implements AdvancedMavenLifecycleParticipant {
 
 	public final static String pluginGroupId = "io.teecube.tic";
 	public final static String pluginArtifactId = "tic-bw6";
-	public final static String pluginKey = BW6LifecycleParticipant.pluginGroupId + ":" + BW6LifecycleParticipant.pluginArtifactId;
-
-	private CommonMojo propertiesManager;
 
 	private Map<File, ByteArrayOutputStream> history;
 
+	private Boolean displayLoadedMessage = false;
 	private Boolean p2ResolveEnabled = true;
 
 	private HashMap<String, List<Dependency>> projectDependencies;
 
-	@Override
-	public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
-		fixStandalonePOM(session.getCurrentProject(), new File(session.getRequest().getBaseDirectory()));
+	@Requirement
+	private BundleReader bundleReader;
 
-		// plugin manager and properties manager
-		propertiesManager = CommonMojo.propertiesManager(session, session.getCurrentProject());
-		PluginConfigurator.propertiesManager = propertiesManager;
+	@Requirement
+	private TychoResolver resolver;
+
+	@Requirement
+	private PlexusContainer plexus;
+
+	@Requirement
+	private Logger log;
+
+	@Override
+	protected String getPluginGroupId() {
+		return pluginGroupId;
+	}
+
+	@Override
+	protected String getPluginArtifactId() {
+		return pluginArtifactId;
+	}
+
+	@Override
+	protected String loadedMessage() {
+		return displayLoadedMessage ? Messages.LOADED : null;
+	}
+
+	@Override
+	protected void initProjects(MavenSession session) throws MavenExecutionException {
+		if ("standalone-pom".equals(session.getCurrentProject().getArtifactId())) {
+			p2ResolveEnabled = false;
+		}
+
 		PluginManager.registerCustomPluginManager(pluginManager, new BW6MojosFactory()); // to inject Global Parameters in Mojos
 		PropertiesEnforcer.setCustomProperty(session, "sampleProfileCommandLine", GenerateGlobalParametersDocMojo.standaloneGenerator(session.getCurrentProject(), this.getClass()).getFullSampleProfileForCommandLine(BW6LifecycleParticipant.pluginArtifactId, "| "));
 
@@ -116,34 +112,56 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 		CommonTIBCOMojo.setJreVersions(session, propertiesManager);
 
 //		if (!skipPrepareProjects(session)) {
-			List<MavenProject> projects = prepareProjects(session.getProjects(), session.getProjectBuildingRequest(), session);
-			session.setProjects(projects);
-			PluginConfigurator.propertiesManager.setProject(session.getCurrentProject());
+		List<MavenProject> projects = prepareProjects(session.getProjects(), session.getProjectBuildingRequest(), session);
+		session.setProjects(projects);
+		PluginConfigurator.propertiesManager.setProject(session.getCurrentProject());
 //		}
 
 		customizeGoalsExecutions(session);
 
 		if (!skipRules(session)) {
-			PropertiesEnforcer.enforceProperties(session, pluginManager, logger, new ArrayList<String>(), BW6LifecycleParticipant.class, pluginKey); // check that all mandatory properties are correct
+			PropertiesEnforcer.enforceProperties(session, pluginManager, logger, new ArrayList<String>(), BW6LifecycleParticipant.class, getPluginKey()); // check that all mandatory properties are correct
 		}
 
 		if (!skipPrepareProjects(session)) {
 			if (p2ResolveEnabled) {
+				displayLoadedMessage = true;
 				logger.info(Messages.RESOLVING_BW6_DEPENDENCIES);
 				logger.info(Messages.MESSAGE_SPACE);
-				super.afterProjectsRead(session);
+				TychoMavenLifecycleParticipant tychoMavenLifecycleParticipant = new StandaloneTychoMavenLifecycleParticipant(bundleReader, resolver, plexus, log);
+				tychoMavenLifecycleParticipant.afterProjectsRead(session);
 				logger.info(Messages.MESSAGE_SPACE);
 				logger.info(Messages.RESOLVED_BW6_DEPENDENCIES);
 				logger.info(Messages.MESSAGE_SPACE);
 			}
-
-			logger.info(Messages.LOADED);
 		}
 
 		restoreManifests(); // the "prepare-module-meta" goal will do the version replacement if configured to do so (mandatory to have a valid format for the version to resolve dependencies)
+	}
 
-		session.getUserProperties().put("tycho.mode", "maven"); // to avoid duplicate call of TychoMavenLifecycleParticipant.afterProjectsRead()
-		session.getUserProperties().put(CommonMojo.mojoInitialized, "true");
+	protected class StandaloneTychoMavenLifecycleParticipant extends TychoMavenLifecycleParticipant {
+		public StandaloneTychoMavenLifecycleParticipant(BundleReader bundleReader, TychoResolver resolver, PlexusContainer plexus, Logger log) throws MavenExecutionException {
+			try {
+				// inject bundleReader
+				Field bundleReaderField = TychoMavenLifecycleParticipant.class.getDeclaredField("bundleReader");
+				bundleReaderField.setAccessible(true);
+				bundleReaderField.set(this, bundleReader);
+				// inject resolver
+				Field resolverField = TychoMavenLifecycleParticipant.class.getDeclaredField("resolver");
+				resolverField.setAccessible(true);
+				resolverField.set(this, resolver);
+				// inject plexus
+				Field plexusField = TychoMavenLifecycleParticipant.class.getDeclaredField("plexus");
+				plexusField.setAccessible(true);
+				plexusField.set(this, plexus);
+				// inject log
+				Field logField = TychoMavenLifecycleParticipant.class.getDeclaredField("log");
+				logField.setAccessible(true);
+				logField.set(this, log);
+			} catch (IllegalAccessException | NoSuchFieldException e) {
+				throw new MavenExecutionException(e.getLocalizedMessage(), e);
+			}
+		}
 	}
 
 	private void setStudioVersion(MavenSession session) {
@@ -171,15 +189,6 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 		}
 		if (studioVersion != null) {
 			PropertiesEnforcer.setCustomProperty(session, BW6MojoInformation.Studio.studioVersion, studioVersion);
-		}
-	}
-
-	private void fixStandalonePOM(MavenProject mavenProject, File requestBaseDirectory) {
-		if (mavenProject == null) return;
-
-		if ("standalone-pom".equals(mavenProject.getArtifactId()) && requestBaseDirectory != null) {
-			p2ResolveEnabled = false;
-			mavenProject.setFile(new File(requestBaseDirectory, "pom.xml"));
 		}
 	}
 
@@ -369,7 +378,6 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 	 * their original versions.
 	 * </p>
 	 *
-	 * @param mavenProject
 	 * @throws MavenExecutionException
 	 * @throws MojoExecutionException
 	 * @throws MojoFailureException
@@ -392,30 +400,6 @@ public class BW6LifecycleParticipant extends TychoMavenLifecycleParticipant impl
 			}
 		}
 
-	}
-
-	public void setPlexus(PlexusContainer plexus) {
-		this.plexus = plexus;
-	}
-
-	public void setLogger(Logger logger) {
-		this.logger = logger;
-	}
-
-	public void setArtifactRepositoryFactory(ArtifactRepositoryFactory artifactRepositoryFactory) {
-		this.artifactRepositoryFactory = artifactRepositoryFactory;
-	}
-
-	public void setPluginManager(BuildPluginManager pluginManager) {
-		this.pluginManager = pluginManager;
-	}
-
-	public void setProjectBuilder(ProjectBuilder projectBuilder) {
-		this.projectBuilder = projectBuilder;
-	}
-
-	public void setPluginDescriptor(PluginDescriptor pluginDescriptor) {
-		this.pluginDescriptor = pluginDescriptor;
 	}
 
 }

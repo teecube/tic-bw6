@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -602,7 +602,7 @@ public class BW6PackagingConvertor {
 	private MavenProject prepareBW6Module() throws MojoExecutionException, IOException, XmlPullParserException, BundleException, UnknownRepositoryLayoutException {
 		mavenProject.setPackaging("eclipse-plugin"); // change packaging of the POM to "eclipse-plugin" (used by tycho plugins)
 
-		PluginConfigurator.updatePluginsConfiguration(mavenProject, session, true, BW6PackagingConvertor.class, logger, BW6LifecycleParticipant.pluginKey);
+		PluginConfigurator.updatePluginsConfiguration(mavenProject, session, true, BW6PackagingConvertor.class, logger, BW6LifecycleParticipant.pluginGroupId + ":" + BW6LifecycleParticipant.pluginArtifactId);
 
 		processRequiredCapabilites(getRequiredCapabilities(mavenProject)); // will update builtinCapabilities and customCapabilities
 
