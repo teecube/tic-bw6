@@ -65,6 +65,8 @@ public abstract class CommonModule extends BW6ApplicationCommonMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
+
 		switch (project.getPackaging()) {
 		case "eclipse-plugin":
 		case BW6_APP_MODULE_PACKAGING:

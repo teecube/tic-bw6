@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.tools.ant.taskdefs.optional.ReplaceRegExp;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -62,6 +63,11 @@ import t3.tic.bw6.util.SubstVarMarshaller;
  */
 @Mojo(name="add-module", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresProject = true)
 public class AddModuleMojo extends CommonModule {
+
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
+	}
 
 	@Override
 	protected boolean updateModule(String moduleSymbolicName, String moduleVersion, ModuleComponentsMarshaller moduleComposite, PackageUnitMarshaller packageUnit) throws MojoExecutionException {

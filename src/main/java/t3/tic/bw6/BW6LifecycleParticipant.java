@@ -111,11 +111,9 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 		setStudioVersion(session);
 		CommonTIBCOMojo.setJreVersions(session, propertiesManager);
 
-//		if (!skipPrepareProjects(session)) {
 		List<MavenProject> projects = prepareProjects(session.getProjects(), session.getProjectBuildingRequest(), session);
 		session.setProjects(projects);
 		PluginConfigurator.propertiesManager.setProject(session.getCurrentProject());
-//		}
 
 		customizeGoalsExecutions(session);
 
@@ -123,17 +121,15 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 			PropertiesEnforcer.enforceProperties(session, pluginManager, logger, new ArrayList<String>(), BW6LifecycleParticipant.class, getPluginKey()); // check that all mandatory properties are correct
 		}
 
-		if (!skipPrepareProjects(session)) {
-			if (p2ResolveEnabled) {
-				displayLoadedMessage = true;
-				logger.info(Messages.RESOLVING_BW6_DEPENDENCIES);
-				logger.info(Messages.MESSAGE_SPACE);
-				TychoMavenLifecycleParticipant tychoMavenLifecycleParticipant = new StandaloneTychoMavenLifecycleParticipant(bundleReader, resolver, plexus, log);
-				tychoMavenLifecycleParticipant.afterProjectsRead(session);
-				logger.info(Messages.MESSAGE_SPACE);
-				logger.info(Messages.RESOLVED_BW6_DEPENDENCIES);
-				logger.info(Messages.MESSAGE_SPACE);
-			}
+		if (!containsNonOSGIGoal(session) && p2ResolveEnabled) {
+			displayLoadedMessage = true;
+			logger.info(Messages.RESOLVING_BW6_DEPENDENCIES);
+			logger.info(Messages.MESSAGE_SPACE);
+			TychoMavenLifecycleParticipant tychoMavenLifecycleParticipant = new StandaloneTychoMavenLifecycleParticipant(bundleReader, resolver, plexus, log);
+			tychoMavenLifecycleParticipant.afterProjectsRead(session);
+			logger.info(Messages.MESSAGE_SPACE);
+			logger.info(Messages.RESOLVED_BW6_DEPENDENCIES);
+			logger.info(Messages.MESSAGE_SPACE);
 		}
 
 		restoreManifests(); // the "prepare-module-meta" goal will do the version replacement if configured to do so (mandatory to have a valid format for the version to resolve dependencies)
@@ -192,16 +188,7 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 		}
 	}
 
-	private boolean skipPrepareProjects(MavenSession session) {
-		for (String goal : session.getRequest().getGoals()) {
-			if (goal.startsWith("toe:") || goal.startsWith("archetype:") || goal.endsWith(":add-module") || goal.endsWith(":remove-module")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean ignoreBadParentDefinition(MavenSession session) {
+	private boolean containsNonOSGIGoal(MavenSession session) {
 		for (String goal : session.getRequest().getGoals()) {
 			if (goal.endsWith(":add-module") ||
 				goal.endsWith(":remove-module") ||
@@ -225,6 +212,9 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 	}
 
 	private void customizeGoalsExecutions(MavenSession session) {
+		if (containsNonOSGIGoal(session)) {
+			session.getRequest().getUserProperties().put("bw6MavenSkip", "true");
+		}
 		if (session.getRequest().getGoals().contains("bw6:p2maven-install")) {
 			session.getRequest().getUserProperties().put("bw6MavenSkip", "true");
 			p2ResolveEnabled = false;
@@ -271,19 +261,25 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 		for (MavenProject mavenProject : projects) {
 			PluginConfigurator.addPluginsParameterInModel(mavenProject, BW6LifecycleParticipant.class, logger);
 
+			if (containsNonOSGIGoal(session)) {
+				result.add(mavenProject);
+				logger.debug("Skipping conversion for : " + mavenProject.getName());
+				continue;
+			}
+
 			convertor.setMavenProject(mavenProject);
 			try {
 				switch (mavenProject.getPackaging()) {
 				case BW6CommonMojo.BW6_APP_MODULE_PACKAGING:
 					forceManifestForValidation(mavenProject);
-					if (!ignoreBadParentDefinition(session)) {
+					if (!containsNonOSGIGoal(session)) {
 						checkForBadParentDefinition(mavenProject);
 					}
 					result.add(convertor.prepareBW6AppModule());
 					break;
 				case BW6CommonMojo.BW6_SHARED_MODULE_PACKAGING:
 					forceManifestForValidation(mavenProject);
-					if (!ignoreBadParentDefinition(session)) {
+					if (!containsNonOSGIGoal(session)) {
 						checkForBadParentDefinition(mavenProject);
 					}
 					result.add(convertor.prepareBW6SharedModule());

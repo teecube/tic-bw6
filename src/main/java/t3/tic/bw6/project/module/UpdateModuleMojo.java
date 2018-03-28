@@ -87,7 +87,10 @@ public class UpdateModuleMojo extends BW6ModuleCommonMojo implements OSGIEnabled
 		try {
 			List<File> designLocations = getDesignLocations();
 			for (File designLocation : designLocations) {
-				bundles.addAll(FileUtils.listFiles(new File(designLocation, "plugins"), new String[] {"jar"}, false));
+				File pluginsDirectory = new File(designLocation, "plugins");
+				if (pluginsDirectory.exists() && pluginsDirectory.isDirectory()) {
+					bundles.addAll(FileUtils.listFiles(new File(designLocation, "plugins"), new String[]{"jar"}, false));
+				}
 			}
 
 			bundles.addAll(FileUtils.listFiles(new File(eclipsePlatformHome, "org.eclipse.equinox.p2.touchpoint.eclipse/plugins"), new String[] {"jar"}, false));
