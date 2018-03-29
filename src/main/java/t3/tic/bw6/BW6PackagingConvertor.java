@@ -255,7 +255,6 @@ public class BW6PackagingConvertor {
 				logger.info("trying to resolve...");
 
 				Artifact artifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope(), dependency.getType(), dependency.getClassifier(), artifactHandler);
-				System.out.println(artifact.getArtifactId());
 
 				ArtifactResolutionRequest request = new ArtifactResolutionRequest();
 				request.setArtifact(artifact);
@@ -723,7 +722,6 @@ public class BW6PackagingConvertor {
 			List<Dependency> transitiveDependencies = projectDependencies.get(key);
 			if (transitiveDependencies != null) {
 				for (Dependency d : transitiveDependencies) {
-					System.out.println(d.getArtifactId());
 					mavenProject.getModel().addDependency(d);
 				}
 			} else {

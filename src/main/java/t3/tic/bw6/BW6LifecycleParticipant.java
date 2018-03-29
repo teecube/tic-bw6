@@ -130,6 +130,8 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 			logger.info(Messages.MESSAGE_SPACE);
 			logger.info(Messages.RESOLVED_BW6_DEPENDENCIES);
 			logger.info(Messages.MESSAGE_SPACE);
+
+			session.getUserProperties().put("tycho.mode", "maven"); // to avoid duplicate call of TychoMavenLifecycleParticipant.afterProjectsRead()
 		}
 
 		restoreManifests(); // the "prepare-module-meta" goal will do the version replacement if configured to do so (mandatory to have a valid format for the version to resolve dependencies)
@@ -204,7 +206,9 @@ public class BW6LifecycleParticipant extends CommonMavenLifecycleParticipant imp
 
 	private boolean skipRules(MavenSession session) {
 		for (String goal : session.getRequest().getGoals()) {
-			if (goal.startsWith("toe:") || goal.startsWith("archetype:")) {
+			if (goal.startsWith("toe:") ||
+				goal.startsWith("io.teecube.toe:") ||
+				goal.startsWith("archetype:")) {
 				return true;
 			}
 		}
