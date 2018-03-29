@@ -98,7 +98,7 @@ public abstract class BW6CommonMojo extends CommonTIBCOMojo {
     public final static String JAR_EXTENSION = ".jar";
 
     @Override
-    protected AdvancedMavenLifecycleParticipant getLifecycleParticipant() throws MojoExecutionException {
+    protected AdvancedMavenLifecycleParticipant getLifecycleParticipant() {
         return new BW6LifecycleParticipant();
     }
 
