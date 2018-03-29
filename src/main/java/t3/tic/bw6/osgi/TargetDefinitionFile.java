@@ -16,14 +16,13 @@
  */
 package t3.tic.bw6.osgi;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import de.pdark.decentxml.*;
+import org.codehaus.plexus.util.IOUtil;
+import org.eclipse.tycho.core.resolver.shared.IncludeSourceMode;
+import org.eclipse.tycho.p2.target.facade.TargetDefinition;
+import org.eclipse.tycho.p2.target.facade.TargetDefinitionSyntaxException;
+
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
@@ -32,18 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.codehaus.plexus.util.IOUtil;
-import org.eclipse.tycho.core.resolver.shared.IncludeSourceMode;
-import org.eclipse.tycho.p2.target.facade.TargetDefinition;
-import org.eclipse.tycho.p2.target.facade.TargetDefinitionSyntaxException;
-
-import de.pdark.decentxml.Document;
-import de.pdark.decentxml.Element;
-import de.pdark.decentxml.XMLIOSource;
-import de.pdark.decentxml.XMLParseException;
-import de.pdark.decentxml.XMLParser;
-import de.pdark.decentxml.XMLWriter;
 
 public final class TargetDefinitionFile implements TargetDefinition {
 
@@ -138,7 +125,7 @@ public final class TargetDefinitionFile implements TargetDefinition {
         }
 
         public String getPath() {
-        	return path;
+            return path;
         }
     }
 

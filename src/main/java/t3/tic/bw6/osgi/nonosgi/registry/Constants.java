@@ -23,9 +23,9 @@ package t3.tic.bw6.osgi.nonosgi.registry;
  */
 public class Constants implements org.osgi.framework.Constants {
 
-	/** Bundle manifest name */
-	public static final String OSGI_BUNDLE_MANIFEST = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
+    /** Bundle manifest name */
+    public static final String OSGI_BUNDLE_MANIFEST = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
-	public static final String PLUGIN_MANIFEST = "plugin.xml"; //$NON-NLS-1$
+    public static final String PLUGIN_MANIFEST = "plugin.xml"; //$NON-NLS-1$
 
 }

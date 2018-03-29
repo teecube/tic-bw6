@@ -16,21 +16,16 @@
  */
 package t3.tic.bw6.project.module;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import t3.plugin.annotations.Mojo;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-
-import t3.plugin.annotations.Mojo;
+import java.util.*;
 
 /**
  * <p>
@@ -43,42 +38,42 @@ import t3.plugin.annotations.Mojo;
 @Mojo (name="clean-build-properties", defaultPhase=LifecyclePhase.PREPARE_PACKAGE)
 public class CleanBuildProperties extends BW6ModuleCommonMojo {
 
-	@Override
-	public void execute() throws MojoExecutionException {
-		try {
-			updateBuildProperties();
-		} catch (IOException e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
-	}
+    @Override
+    public void execute() throws MojoExecutionException {
+        try {
+            updateBuildProperties();
+        } catch (IOException e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
+    }
 
-	/**
-	 * <p>
-	 * This updates the build.properties.
-	 * </p>
-	 * @throws IOException
-	 */
-	private void updateBuildProperties() throws IOException {
-		Properties properties = new Properties();
+    /**
+     * <p>
+     * This updates the build.properties.
+     * </p>
+     * @throws IOException
+     */
+    private void updateBuildProperties() throws IOException {
+        Properties properties = new Properties();
 
-		InputStream is = new FileInputStream(buildPropertiesSource);
-		properties.load(is);
-		is.close();
+        InputStream is = new FileInputStream(buildPropertiesSource);
+        properties.load(is);
+        is.close();
 
-		String binIncludes = (String) properties.get("bin.includes");
-		List<String> includes = new ArrayList<String>();
-		includes.addAll(Arrays.asList(binIncludes.split(",")));
-		for (Iterator<String> it = includes.iterator(); it.hasNext();) {
-			String include = it.next();
-			if (include.startsWith("target/")) {
-				it.remove();
-			}
-		}
-		binIncludes = StringUtils.join(includes, ",");
+        String binIncludes = (String) properties.get("bin.includes");
+        List<String> includes = new ArrayList<String>();
+        includes.addAll(Arrays.asList(binIncludes.split(",")));
+        for (Iterator<String> it = includes.iterator(); it.hasNext();) {
+            String include = it.next();
+            if (include.startsWith("target/")) {
+                it.remove();
+            }
+        }
+        binIncludes = StringUtils.join(includes, ",");
 
-		properties.put("bin.includes", binIncludes);
+        properties.put("bin.includes", binIncludes);
 
-		properties.store(new FileOutputStream(buildPropertiesSource), null);
-	}
+        properties.store(new FileOutputStream(buildPropertiesSource), null);
+    }
 
 }

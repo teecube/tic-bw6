@@ -16,12 +16,12 @@
  */
 package t3.tic.bw6.project.module;
 
-import java.io.File;
-import java.util.List;
-
 import t3.plugin.annotations.GlobalParameter;
 import t3.tic.bw6.BW6MojoInformation;
 import t3.tic.bw6.project.BW6ProjectCommonMojo;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * <p>
@@ -42,32 +42,32 @@ import t3.tic.bw6.project.BW6ProjectCommonMojo;
  */
 public abstract class BW6ModuleCommonMojo extends BW6ProjectCommonMojo {
 
-	@GlobalParameter (property = BW6MojoInformation.BW6Module.buildProperties, defaultValue = BW6MojoInformation.BW6Module.buildProperties_default, category = BW6MojoInformation.BW6Module.category, required = true)
-	protected File buildProperties;
+    @GlobalParameter (property = BW6MojoInformation.BW6Module.buildProperties, defaultValue = BW6MojoInformation.BW6Module.buildProperties_default, category = BW6MojoInformation.BW6Module.category, required = true)
+    protected File buildProperties;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6Module.buildPropertiesSource, defaultValue = BW6MojoInformation.BW6Module.buildPropertiesSource_default, category = BW6MojoInformation.BW6Module.category, required = true)
-	protected File buildPropertiesSource;
+    @GlobalParameter (property = BW6MojoInformation.BW6Module.buildPropertiesSource, defaultValue = BW6MojoInformation.BW6Module.buildPropertiesSource_default, category = BW6MojoInformation.BW6Module.category, required = true)
+    protected File buildPropertiesSource;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6Module.diagramsRelativePath, defaultValue = BW6MojoInformation.BW6Module.diagramsRelativePath_default, category = BW6MojoInformation.BW6Module.category)
-	protected String diagramsRelativePath;
+    @GlobalParameter (property = BW6MojoInformation.BW6Module.diagramsRelativePath, defaultValue = BW6MojoInformation.BW6Module.diagramsRelativePath_default, category = BW6MojoInformation.BW6Module.category)
+    protected String diagramsRelativePath;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6Module.diagramsDirectory, defaultValue = BW6MojoInformation.BW6Module.diagramsDirectory_default, category = BW6MojoInformation.BW6Module.category)
-	protected File diagramsDirectory;
+    @GlobalParameter (property = BW6MojoInformation.BW6Module.diagramsDirectory, defaultValue = BW6MojoInformation.BW6Module.diagramsDirectory_default, category = BW6MojoInformation.BW6Module.category)
+    protected File diagramsDirectory;
 
-	/**
-	 * @return a list of all processes files with ".bwp" extension in the module project.
-	 */
-	protected List<File> getAllProcessesFiles() {
-		return getAllBWPFiles(this.projectBasedir);
-	}
+    /**
+     * @return a list of all processes files with ".bwp" extension in the module project.
+     */
+    protected List<File> getAllProcessesFiles() {
+        return getAllBWPFiles(this.projectBasedir);
+    }
 
-	protected String getPackage(File bwpProcessFile) {
-		if (bwpProcessFile == null || !bwpProcessFile.exists()) return null;
+    protected String getPackage(File bwpProcessFile) {
+        if (bwpProcessFile == null || !bwpProcessFile.exists()) return null;
 
-		String path = bwpProcessFile.getAbsolutePath();
-		path = path.substring(path.indexOf("Processes") + "Processes".length() + 1, path.lastIndexOf(File.separator));
-		path = path.replace("/", ".");
-		return path;
-	}
+        String path = bwpProcessFile.getAbsolutePath();
+        path = path.substring(path.indexOf("Processes") + "Processes".length() + 1, path.lastIndexOf(File.separator));
+        path = path.replace("/", ".");
+        return path;
+    }
 
 }

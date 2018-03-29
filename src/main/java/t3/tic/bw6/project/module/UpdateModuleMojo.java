@@ -16,22 +16,21 @@
  */
 package t3.tic.bw6.project.module;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
-
 import t3.plugin.annotations.Mojo;
 import t3.plugin.annotations.Parameter;
 import t3.tic.bw6.BW6MojoInformation;
 import t3.tic.bw6.osgi.OSGIEnabled;
 import t3.tic.bw6.project.module.diagrams.DiagramGenerator;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -46,62 +45,62 @@ import t3.tic.bw6.project.module.diagrams.DiagramGenerator;
 @Mojo(name="update-bw6-module", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true)
 public class UpdateModuleMojo extends BW6ModuleCommonMojo implements OSGIEnabled {
 
-	@Parameter (property = BW6MojoInformation.BW6Module.skipUpdate, defaultValue = BW6MojoInformation.BW6Module.skipUpdate_default)
-	private boolean updateBW6ModuleSkip;
+    @Parameter (property = BW6MojoInformation.BW6Module.skipUpdate, defaultValue = BW6MojoInformation.BW6Module.skipUpdate_default)
+    private boolean updateBW6ModuleSkip;
 
-	private ClassLoader osgiClassLoader;
+    private ClassLoader osgiClassLoader;
 
-	private File getDiagram(File bwpProcessFile) {
-		diagramsDirectory.mkdirs();
-		return new File(diagramsDirectory, getPackage(bwpProcessFile) + "." + FilenameUtils.removeExtension(bwpProcessFile.getName()) + ".bwd"); // TODO : externalize
-	}
+    private File getDiagram(File bwpProcessFile) {
+        diagramsDirectory.mkdirs();
+        return new File(diagramsDirectory, getPackage(bwpProcessFile) + "." + FilenameUtils.removeExtension(bwpProcessFile.getName()) + ".bwd"); // TODO : externalize
+    }
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		if (updateBW6ModuleSkip) {
-			skipGoal(BW6MojoInformation.BW6Module.skipUpdate);
-			return;
-		}
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (updateBW6ModuleSkip) {
+            skipGoal(BW6MojoInformation.BW6Module.skipUpdate);
+            return;
+        }
 
-		super.execute();
+        super.execute();
 
-		List<File> processesFiles = getAllProcessesFiles();
-		try {
-			if (!processesFiles.isEmpty()) {
-				osgiClassLoader = this.getOSGIClassLoader();
-				DiagramGenerator diagramGenerator = new DiagramGenerator(osgiClassLoader, getLog());
-				for (File processFile : processesFiles) {
-					diagramGenerator.generateProcessDiagram(processFile, getDiagram(processFile));
-				}
-			}
-		} catch (Exception e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
+        List<File> processesFiles = getAllProcessesFiles();
+        try {
+            if (!processesFiles.isEmpty()) {
+                osgiClassLoader = this.getOSGIClassLoader();
+                DiagramGenerator diagramGenerator = new DiagramGenerator(osgiClassLoader, getLog());
+                for (File processFile : processesFiles) {
+                    diagramGenerator.generateProcessDiagram(processFile, getDiagram(processFile));
+                }
+            }
+        } catch (Exception e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
 
-	}
+    }
 
-	@Override
-	public List<File> getOSGIClasspathElements() throws MojoExecutionException {
-		List<File> bundles = new ArrayList<File>();
+    @Override
+    public List<File> getOSGIClasspathElements() throws MojoExecutionException {
+        List<File> bundles = new ArrayList<File>();
 
-		try {
-			List<File> designLocations = getDesignLocations();
-			for (File designLocation : designLocations) {
-				File pluginsDirectory = new File(designLocation, "plugins");
-				if (pluginsDirectory.exists() && pluginsDirectory.isDirectory()) {
-					bundles.addAll(FileUtils.listFiles(new File(designLocation, "plugins"), new String[]{"jar"}, false));
-				}
-			}
+        try {
+            List<File> designLocations = getDesignLocations();
+            for (File designLocation : designLocations) {
+                File pluginsDirectory = new File(designLocation, "plugins");
+                if (pluginsDirectory.exists() && pluginsDirectory.isDirectory()) {
+                    bundles.addAll(FileUtils.listFiles(new File(designLocation, "plugins"), new String[]{"jar"}, false));
+                }
+            }
 
-			bundles.addAll(FileUtils.listFiles(new File(eclipsePlatformHome, "org.eclipse.equinox.p2.touchpoint.eclipse/plugins"), new String[] {"jar"}, false));
-			bundles.addAll(FileUtils.listFiles(new File(tibcoBW6Home, "system/shared"), new String[] {"jar"}, true));
+            bundles.addAll(FileUtils.listFiles(new File(eclipsePlatformHome, "org.eclipse.equinox.p2.touchpoint.eclipse/plugins"), new String[] {"jar"}, false));
+            bundles.addAll(FileUtils.listFiles(new File(tibcoBW6Home, "system/shared"), new String[] {"jar"}, true));
 
-			getLog().debug("Found " + bundles.size() + " OSGi bundles");
-		} catch (FileNotFoundException e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
+            getLog().debug("Found " + bundles.size() + " OSGi bundles");
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
 
-		return bundles;
-	}
+        return bundles;
+    }
 
 }

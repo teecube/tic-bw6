@@ -25,8 +25,8 @@ import java.io.File;
  */
 public interface BW6Artifact {
 
-	public String getArtifactFileExtension();
-	public File getArtifactFile(File basedir, String finalName, String classifier);
-	public File getOutputFile();
+    public String getArtifactFileExtension();
+    public File getArtifactFile(File basedir, String finalName, String classifier);
+    public File getOutputFile();
 
 }

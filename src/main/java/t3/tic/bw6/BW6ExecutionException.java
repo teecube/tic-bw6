@@ -20,10 +20,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 public class BW6ExecutionException extends MojoExecutionException {
 
-	private static final long serialVersionUID = 8937852535556238445L;
+    private static final long serialVersionUID = 8937852535556238445L;
 
-	public BW6ExecutionException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public BW6ExecutionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

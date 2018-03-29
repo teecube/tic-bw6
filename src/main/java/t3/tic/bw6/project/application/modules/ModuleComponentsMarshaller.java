@@ -16,22 +16,20 @@
  */
 package t3.tic.bw6.project.application.modules;
 
-import java.io.File;
-
-import javax.xml.bind.JAXBException;
-
 import org.osoa.xmlns.sca._1.Composite;
 import org.osoa.xmlns.sca._1.ObjectFactory;
-
 import org.xml.sax.SAXException;
 import t3.xml.XMLMarshall;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
+
 public class ModuleComponentsMarshaller extends XMLMarshall<Composite, ObjectFactory> {
 
-	public ModuleComponentsMarshaller(File xmlFile) throws JAXBException, SAXException {
-		super(xmlFile, ObjectFactory.class, com.tibco.tns.xsd.amf.models.sca.extensions.ObjectFactory.class);
+    public ModuleComponentsMarshaller(File xmlFile) throws JAXBException, SAXException {
+        super(xmlFile, ObjectFactory.class, com.tibco.tns.xsd.amf.models.sca.extensions.ObjectFactory.class);
 
-		this.rootElementLocalName = "composite";
-	}
+        this.rootElementLocalName = "composite";
+    }
 
 }
