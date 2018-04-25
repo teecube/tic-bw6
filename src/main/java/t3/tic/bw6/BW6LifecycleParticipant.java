@@ -38,7 +38,7 @@ import org.eclipse.tycho.resolver.TychoResolver;
 import t3.AdvancedMavenLifecycleParticipant;
 import t3.CommonMavenLifecycleParticipant;
 import t3.CommonTIBCOMojo;
-import t3.POMManager;
+import t3.utils.POMManager;
 import t3.plugin.PluginConfigurator;
 import t3.plugin.PluginManager;
 import t3.plugin.PropertiesEnforcer;

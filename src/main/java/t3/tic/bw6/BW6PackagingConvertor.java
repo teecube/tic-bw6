@@ -44,7 +44,7 @@ import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleException;
 import org.twdata.maven.mojoexecutor.MojoExecutor.*;
 import t3.CommonMojo;
-import t3.POMManager;
+import t3.utils.POMManager;
 import t3.plugin.PluginBuilder;
 import t3.plugin.PluginConfigurator;
 import t3.tic.bw6.util.ManifestManager;

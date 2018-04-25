@@ -24,7 +24,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.xml.sax.SAXException;
-import t3.POMManager;
+import t3.utils.POMManager;
 import t3.plugin.annotations.Mojo;
 import t3.tic.bw6.util.SubstVarMarshaller;
 
