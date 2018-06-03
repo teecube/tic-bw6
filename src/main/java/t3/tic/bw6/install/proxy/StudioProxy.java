@@ -127,7 +127,6 @@ public abstract class StudioProxy extends BW6CommonMojo {
         arguments.add("jar:file:///" + new File(outputDirectory, "repo.zip").getAbsolutePath().replace("\\", "/") + "!/");
         arguments.addAll(getArguments());
 
-        getLog().info(Messages.MESSAGE_SPACE);
         getLog().info(getInfoMessage());
 
         try {
