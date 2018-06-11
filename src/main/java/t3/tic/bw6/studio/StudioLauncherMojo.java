@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,19 @@
  */
 package t3.tic.bw6.studio;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.twdata.maven.mojoexecutor.MojoExecutor.*;
+import t3.plugin.annotations.Mojo;
+import t3.plugin.annotations.Parameter;
+import t3.tic.bw6.BW6MojoInformation;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
-
-import t3.plugin.annotations.Mojo;
-import t3.plugin.annotations.Parameter;
-import t3.tic.bw6.BW6MojoInformation;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
  * <p>
@@ -59,71 +52,71 @@ import t3.tic.bw6.BW6MojoInformation;
 @Mojo(name="studio", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresProject = false)
 public class StudioLauncherMojo extends StudioCommon {
 
-	/**
-	 * <p>
-	 * Whether to create a workspace on-the-fly if no workspace is found.
-	 * </p>
-	 */
-	@Parameter (property = BW6MojoInformation.Studio.workspaceCreateIfNotExists, defaultValue = BW6MojoInformation.Studio.workspaceCreateIfNotExists_default)
-	protected boolean createIfNotExists;
+    /**
+     * <p>
+     * Whether to create a workspace on-the-fly if no workspace is found.
+     * </p>
+     */
+    @Parameter (property = BW6MojoInformation.Studio.workspaceCreateIfNotExists, defaultValue = BW6MojoInformation.Studio.workspaceCreateIfNotExists_default)
+    protected boolean createIfNotExists;
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		File workspace = getWorkspaceLocation();
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        File workspace = getWorkspaceLocation();
 
-		if (!workspaceExists(workspace)) {
-			getLog().info("No workspace found at '" + workspace.getAbsolutePath() + "'");
+        if (!workspaceExists(workspace)) {
+            getLog().info("No workspace found at '" + workspace.getAbsolutePath() + "'");
 
-			if (createIfNotExists) {
-				getLog().info("Creating one...");
-				workspace = createWorkspace();
-			} else {
-				getLog().error("Unable to create workspace");
-				throw new MojoExecutionException("Unable to create workspace.");
-			}
-		} else {
-			getLog().info("Using workspace found at '" + workspace.getAbsolutePath() + "'");
-		}
+            if (createIfNotExists) {
+                getLog().info("Creating one...");
+                workspace = createWorkspace();
+            } else {
+                getLog().error("Unable to create workspace");
+                throw new MojoExecutionException("Unable to create workspace.");
+            }
+        } else {
+            getLog().info("Using workspace found at '" + workspace.getAbsolutePath() + "'");
+        }
 
         ArrayList<String> arguments = new ArrayList<String>();
         if (workspace != null && workspace.exists() && workspace.isDirectory()) {
-        	arguments.add("-data");
-        	arguments.add(workspace.getAbsolutePath());
+            arguments.add("-data");
+            arguments.add(workspace.getAbsolutePath());
         }
 
-		try {
-			executeBusinessStudio(arguments, projectBasedir, "fail to launch Studio", true, true);
-		} catch (IOException e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
-	}
+        try {
+            executeBusinessStudio(arguments, projectBasedir, "fail to launch Studio", true, true);
+        } catch (IOException e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
+    }
 
-	private File createWorkspace() throws MojoExecutionException {
-		WorkspaceMojo.workspace = null;
+    private File createWorkspace() throws MojoExecutionException {
+        WorkspaceMojo.workspace = null;
 
-		getLog().info("");
-		getLog().info(">>> " + pluginDescriptor.getArtifactId() + ":" + pluginDescriptor.getVersion() + ":workspace (" + "default-cli" + ") @ " + project.getArtifactId() + " >>>");
+        getLog().info("");
+        getLog().info(">>> " + pluginDescriptor.getArtifactId() + ":" + pluginDescriptor.getVersion() + ":workspace (" + "default-cli" + ") @ " + project.getArtifactId() + " >>>");
 
-		ArrayList<Element> configuration = new ArrayList<Element>();
+        ArrayList<Element> configuration = new ArrayList<Element>();
 
-		executeMojo(
-			plugin(
-				groupId(pluginDescriptor.getGroupId()),
-				artifactId(pluginDescriptor.getArtifactId()),
-				version(pluginDescriptor.getVersion())
-			),
-			goal("workspace"),
-			configuration(
-				configuration.toArray(new Element[0])
-			),
-			getEnvironment()
-		);
+        executeMojo(
+            plugin(
+                groupId(pluginDescriptor.getGroupId()),
+                artifactId(pluginDescriptor.getArtifactId()),
+                version(pluginDescriptor.getVersion())
+            ),
+            goal("workspace"),
+            configuration(
+                configuration.toArray(new Element[0])
+            ),
+            getEnvironment()
+        );
 
-		getLog().info("");
-		getLog().info("<<< " + pluginDescriptor.getArtifactId() + ":" + pluginDescriptor.getVersion() + ":workspace (" + "default-cli" + ") @ " + project.getArtifactId() + " <<<");
-		getLog().info("");
+        getLog().info("");
+        getLog().info("<<< " + pluginDescriptor.getArtifactId() + ":" + pluginDescriptor.getVersion() + ":workspace (" + "default-cli" + ") @ " + project.getArtifactId() + " <<<");
+        getLog().info("");
 
-		return WorkspaceMojo.workspace;
-	}
+        return WorkspaceMojo.workspace;
+    }
 
 }

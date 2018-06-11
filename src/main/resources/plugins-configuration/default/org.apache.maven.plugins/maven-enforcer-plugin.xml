@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    (C) Copyright 2016-2017 teecube
+    (C) Copyright 2016-2018 teecube
     (http://teecu.be) and others.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@
 			</requireJavaVersion>
 			<requireProperty>
 				<property>tibco.home</property>
-				<message>The "tibco.home" property must be a valid TIBCO installation.${line.separator}${line.separator}Make sure you have a profile set like the following:${line.separator}${sampleProfileCommandLine}${line.separator}${line.separator}Run 'mvn toe:bw6-configure' for guided configuration.</message>
+				<message>The "tibco.home" property must be a valid TIBCO installation.${line.separator}${line.separator}Make sure you have a profile set like the following:${line.separator}${sampleProfileCommandLine}${line.separator}${line.separator}Run 'mvn toe:configure-bw6' for guided configuration.</message>
 				<regex>.*</regex>
 			</requireProperty>
 			<requireProperty>

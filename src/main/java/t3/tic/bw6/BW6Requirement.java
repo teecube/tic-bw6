@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ package t3.tic.bw6;
  * <p>
  * For instance:
  * </p>
- * 	<pre>
+ *     <pre>
  *&lt;configuration&gt;
  *  &lt;dependencies&gt;
  *    &lt;requirement&gt;
@@ -34,56 +34,56 @@ package t3.tic.bw6;
  *    &lt;/requirement&gt;
  *  &lt;/dependencies&gt;
  *&lt;/configuration&gt;
- * 	</pre>
+ *     </pre>
  *
  * @author Mathieu Debove &lt;mad@teecu.be&gt;
  *
  */
 public class BW6Requirement {
 
-	private String type;
-	private String id;
-	private String versionRange;
+    private String type;
+    private String id;
+    private String versionRange;
 
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getVersionRange() {
-		return versionRange;
-	}
-	public void setVersionRange(String versionRange) {
-		this.versionRange = versionRange;
-	}
+    public String getVersionRange() {
+        return versionRange;
+    }
+    public void setVersionRange(String versionRange) {
+        this.versionRange = versionRange;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == null) {
-			return false;
-		} else {
-			return o.hashCode() == this.hashCode();
-		}
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        } else {
+            return o.hashCode() == this.hashCode();
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		String concat =
-		(this.type == null ? "" : this.type)
-		+
-		(this.id == null ? "" : this.id)
-		+
-		(this.versionRange == null ? "" : this.versionRange);
-	    return concat.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        String concat =
+        (this.type == null ? "" : this.type)
+        +
+        (this.id == null ? "" : this.id)
+        +
+        (this.versionRange == null ? "" : this.versionRange);
+        return concat.hashCode();
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,11 @@
  */
 package t3.tic.bw6.studio;
 
-import java.io.File;
-
 import t3.plugin.annotations.Parameter;
 import t3.tic.bw6.BW6CommonMojo;
 import t3.tic.bw6.BW6MojoInformation;
+
+import java.io.File;
 
 /**
  *
@@ -29,46 +29,46 @@ import t3.tic.bw6.BW6MojoInformation;
  */
 public class StudioCommon extends BW6CommonMojo {
 
-	/**
-	 * <p>
-	 * Location of an Eclipse workspace for TIBCO BusinessStudio.
-	 * </p>
-	 */
-	@Parameter (property = BW6MojoInformation.Studio.workspaceLocation, defaultValue = "", required = false)
-	protected File workspaceLocation;
+    /**
+     * <p>
+     * Location of an Eclipse workspace for TIBCO BusinessStudio.
+     * </p>
+     */
+    @Parameter (property = BW6MojoInformation.Studio.workspaceLocation, defaultValue = "", required = false)
+    protected File workspaceLocation;
 
-	private File sessionBasedir = null;
+    private File sessionBasedir = null;
 
-	public static File workspace;
+    public static File workspace;
 
-	protected File getWorkspaceLocation() {
-		if (workspaceLocation != null && workspaceLocation.exists() && workspaceLocation.isDirectory()) {
-			return workspaceLocation;
-		}
+    protected File getWorkspaceLocation() {
+        if (workspaceLocation != null && workspaceLocation.exists() && workspaceLocation.isDirectory()) {
+            return workspaceLocation;
+        }
 
-		File pomInSessionBasedir = new File(getSessionBasedir(), "pom.xml");
+        File pomInSessionBasedir = new File(getSessionBasedir(), "pom.xml");
 
-		if (!pomInSessionBasedir.exists()) { // no POM
-			workspaceLocation = getSessionBasedir(); // create in session basedir
-		} else {
-			workspaceLocation = getSessionBasedir().getParentFile(); // create in parent directory
-		}
+        if (!pomInSessionBasedir.exists()) { // no POM
+            workspaceLocation = getSessionBasedir(); // create in session basedir
+        } else {
+            workspaceLocation = getSessionBasedir().getParentFile(); // create in parent directory
+        }
 
-		return workspaceLocation;
-	}
+        return workspaceLocation;
+    }
 
-	protected File getSessionBasedir() {
-		if (sessionBasedir == null) {
-			sessionBasedir  = new File(session.getRequest().getBaseDirectory());
-		}
+    protected File getSessionBasedir() {
+        if (sessionBasedir == null) {
+            sessionBasedir  = new File(session.getRequest().getBaseDirectory());
+        }
 
-		return sessionBasedir;
-	}
+        return sessionBasedir;
+    }
 
-	protected boolean workspaceExists(File workspace) {
-		return new File(workspace, ".bsProject").exists() ||
-			   new File(workspace, ".com.tibco.bw.rad").exists() ||
-			   new File(workspace, ".metadata").exists();
-	}
+    protected boolean workspaceExists(File workspace) {
+        return new File(workspace, ".bsProject").exists() ||
+               new File(workspace, ".com.tibco.bw.rad").exists() ||
+               new File(workspace, ".metadata").exists();
+    }
 
 }

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Go offline
+Bundle-SymbolicName: go-offline;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: codeandme.blogspot.com
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

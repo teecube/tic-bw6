@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,13 @@
  */
 package t3.tic.bw6.install.proxy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-
 import t3.plugin.annotations.Mojo;
 import t3.tic.bw6.Messages;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -57,28 +56,28 @@ import t3.tic.bw6.Messages;
 @Mojo(name="studio-proxy-install", requiresProject = false)
 public class StudioProyxInstallMojo extends StudioProxy {
 
-	@Override
-	public List<String> getArguments() {
-		List<String> arguments = new ArrayList<>();
-		arguments.add("-installIUs");
-		arguments.add(proxyFeature);
+    @Override
+    public List<String> getArguments() {
+        List<String> arguments = new ArrayList<>();
+        arguments.add("-installIUs");
+        arguments.add(proxyFeature);
 
-		return arguments;
-	}
+        return arguments;
+    }
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		super.execute(); // must exist because of standalone goal initialization
-	}
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        super.execute(); // must exist because of standalone goal initialization
+    }
 
-	@Override
-	protected String getFailureMessage() {
-		return Messages.Studio.PROXY_INSTALL_FAILED;
-	}
+    @Override
+    protected String getFailureMessage() {
+        return Messages.Studio.PROXY_INSTALL_FAILED;
+    }
 
-	@Override
-	protected String getInfoMessage() {
-		return Messages.Studio.PROXY_INSTALL;
-	}
+    @Override
+    protected String getInfoMessage() {
+        return Messages.Studio.PROXY_INSTALL;
+    }
 
 }

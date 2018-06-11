@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 package t3.tic.bw6;
 
 import org.apache.maven.plugin.AbstractMojo;
-
 import t3.MojosFactory;
 import t3.tic.bw6.install.BW6P2MavenInstallMojo;
 import t3.tic.bw6.install.proxy.StudioProyxInstallMojo;
@@ -32,41 +31,41 @@ import t3.tic.bw6.studio.StudioLauncherMojo;
 import t3.tic.bw6.studio.WorkspaceMojo;
 
 public class BW6MojosFactory extends MojosFactory {
-	@SuppressWarnings("unchecked")
-	public <T extends AbstractMojo> T getMojo(Class<T> type) {
-		if (type == null) {
-			return null;
-		}
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractMojo> T getMojo(Class<T> type) {
+        if (type == null) {
+            return null;
+        }
 
-		String typeName = type.getSimpleName();
+        String typeName = type.getSimpleName();
 
-		switch (typeName) {
-		case "AddModuleMojo":
-			return (T) new AddModuleMojo();
-		case "RemoveModuleMojo":
-			return (T) new RemoveModuleMojo();
-		case "BW6P2MavenInstallMojo":
-			return (T) new BW6P2MavenInstallMojo();
-		case "CleanBuildProperties":
-			return (T) new CleanBuildProperties();
-		case "PackageBW6Mojo":
-			return (T) new PackageBW6Mojo();
-		case "PrepareApplicationMetaMojo":
-			return (T) new PrepareApplicationMetaMojo();
-		case "PrepareModuleMetaMojo":
-			return (T) new PrepareModuleMetaMojo();
-		case "StudioLauncherMojo":
-			return (T) new StudioLauncherMojo();
-		case "StudioProyxInstallMojo":
-			return (T) new StudioProyxInstallMojo();
-		case "StudioProyxUninstallMojo":
-			return (T) new StudioProyxUninstallMojo();
-		case "WorkspaceMojo":
-			return (T) new WorkspaceMojo();
-		default:
-			return super.getMojo(type);
-		}
+        switch (typeName) {
+        case "AddModuleMojo":
+            return (T) new AddModuleMojo();
+        case "RemoveModuleMojo":
+            return (T) new RemoveModuleMojo();
+        case "BW6P2MavenInstallMojo":
+            return (T) new BW6P2MavenInstallMojo();
+        case "CleanBuildProperties":
+            return (T) new CleanBuildProperties();
+        case "PackageBW6Mojo":
+            return (T) new PackageBW6Mojo();
+        case "PrepareApplicationMetaMojo":
+            return (T) new PrepareApplicationMetaMojo();
+        case "PrepareModuleMetaMojo":
+            return (T) new PrepareModuleMetaMojo();
+        case "StudioLauncherMojo":
+            return (T) new StudioLauncherMojo();
+        case "StudioProyxInstallMojo":
+            return (T) new StudioProyxInstallMojo();
+        case "StudioProyxUninstallMojo":
+            return (T) new StudioProyxUninstallMojo();
+        case "WorkspaceMojo":
+            return (T) new WorkspaceMojo();
+        default:
+            return super.getMojo(type);
+        }
 
-	}
+    }
 
 }

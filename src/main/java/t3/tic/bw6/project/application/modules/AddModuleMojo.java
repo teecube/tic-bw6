@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,31 @@
  */
 package t3.tic.bw6.project.application.modules;
 
+import com.tibco.schemas.tra.model.core.packagingmodel.Module;
+import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Modules;
+import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Properties;
+import com.tibco.schemas.tra.model.core.packagingmodel.Property;
+import com.tibco.xmlns.repo.types._2002.GlobalVariable;
+import com.tibco.xmlns.repo.types._2002.GlobalVariables;
+import org.apache.maven.model.Model;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.tools.ant.taskdefs.optional.ReplaceRegExp;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.osoa.xmlns.sca._1.Component;
+import org.osoa.xmlns.sca._1.PropertyType;
+import org.xml.sax.SAXException;
+import t3.utils.POMManager;
+import t3.utils.Utils;
+import t3.plugin.annotations.Mojo;
+import t3.tic.bw6.BW6LifecycleParticipant;
+import t3.tic.bw6.util.BW6Utils;
+import t3.tic.bw6.util.SubstVarMarshaller;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,32 +49,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
-import org.apache.maven.model.Model;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.tools.ant.taskdefs.optional.ReplaceRegExp;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.osoa.xmlns.sca._1.Component;
-import org.osoa.xmlns.sca._1.PropertyType;
-
-import com.tibco.schemas.tra.model.core.packagingmodel.Module;
-import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Modules;
-import com.tibco.schemas.tra.model.core.packagingmodel.PackageUnit.Properties;
-import com.tibco.schemas.tra.model.core.packagingmodel.Property;
-import com.tibco.xmlns.repo.types._2002.GlobalVariable;
-import com.tibco.xmlns.repo.types._2002.GlobalVariables;
-
-import t3.POMManager;
-import t3.Utils;
-import t3.plugin.annotations.Mojo;
-import t3.tic.bw6.BW6LifecycleParticipant;
-import t3.tic.bw6.util.BW6Utils;
-import t3.tic.bw6.util.SubstVarMarshaller;
 
 /**
  * <p>
@@ -62,170 +61,175 @@ import t3.tic.bw6.util.SubstVarMarshaller;
 @Mojo(name="add-module", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresProject = true)
 public class AddModuleMojo extends CommonModule {
 
-	@Override
-	protected boolean updateModule(String moduleSymbolicName, String moduleVersion, ModuleComponentsMarshaller moduleComposite, PackageUnitMarshaller packageUnit) throws MojoExecutionException {
-		if (packageUnit.getObject().getModules() != null) {
-			for (Module module : packageUnit.getObject().getModules().getModule()) {
-				if (moduleSymbolicName.equals(module.getSymbolicName()) && 
-					moduleVersion.equals(module.getTechnologyVersion())) {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        super.execute();
+    }
 
-					getLog().warn("Module '" + moduleSymbolicName + ":" + moduleVersion + "' already exists in application. Skipping.");
+    @Override
+    protected boolean updateModule(String moduleSymbolicName, String moduleVersion, ModuleComponentsMarshaller moduleComposite, PackageUnitMarshaller packageUnit) throws MojoExecutionException {
+        if (packageUnit.getObject().getModules() != null) {
+            for (Module module : packageUnit.getObject().getModules().getModule()) {
+                if (moduleSymbolicName.equals(module.getSymbolicName()) && 
+                    moduleVersion.equals(module.getTechnologyVersion())) {
 
-					addModuleInApplication();
+                    getLog().warn("Module '" + moduleSymbolicName + ":" + moduleVersion + "' already exists in application. Skipping.");
 
-					return false;
-				}
-			}
-		} else {
-			packageUnit.getObject().setModules(new Modules());
-		}
+                    addModuleInApplication();
 
-		// updated UUID in .bwm file
-		QName idAttribute = new QName("http://www.omg.org/XMI", "id", "xmi");
-		moduleComposite.getObject().getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
-		for (PropertyType property : moduleComposite.getObject().getProperty()) {
-			property.getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
-		}
-		for (Component component : moduleComposite.getObject().getComponent()) {
-			component.getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
-			component.getImplementation().getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
-		}
+                    return false;
+                }
+            }
+        } else {
+            packageUnit.getObject().setModules(new Modules());
+        }
 
-		try {
-			moduleComposite.save();
-		} catch (UnsupportedEncodingException | FileNotFoundException | JAXBException e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
+        // updated UUID in .bwm file
+        QName idAttribute = new QName("http://www.omg.org/XMI", "id", "xmi");
+        moduleComposite.getObject().getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
+        for (PropertyType property : moduleComposite.getObject().getProperty()) {
+            property.getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
+        }
+        for (Component component : moduleComposite.getObject().getComponent()) {
+            component.getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
+            component.getImplementation().getOtherAttributes().put(idAttribute, EcoreUtil.generateUUID());
+        }
 
-		// not found, adding it
-		Module module = new Module();
-		module.setSymbolicName(moduleSymbolicName);
-		module.setTechnologyType("bw-appmodule,osgi-bundle"); // TODO : externalize
-		module.setTechnologyVersion(moduleVersion);
-		packageUnit.getObject().getModules().getModule().add(module);
+        try {
+            moduleComposite.save();
+        } catch (UnsupportedEncodingException | FileNotFoundException | JAXBException e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
 
-		if (packageUnit.getObject().getProperties() == null) {
-			packageUnit.getObject().setProperties(new Properties());
-		}
+        // not found, adding it
+        Module module = new Module();
+        module.setSymbolicName(moduleSymbolicName);
+        module.setTechnologyType("bw-appmodule,osgi-bundle"); // TODO : externalize
+        module.setTechnologyVersion(moduleVersion);
+        packageUnit.getObject().getModules().getModule().add(module);
 
-		for (PropertyType property : moduleComposite.getObject().getProperty()) {
-			Property p = new Property();
-			String scalable = property.getOtherAttributes().get(new QName("scalable"));
-			p.setName("//" + moduleSymbolicName + "//" + property.getName());
-			p.setType("xs:" + property.getType().getLocalPart());
-			p.setVisibility("private");
-			p.setScalable(Boolean.parseBoolean(scalable));
-			p.setOverrideValue(false);
-			packageUnit.getObject().getProperties().getProperty().add(p);
-		}
+        if (packageUnit.getObject().getProperties() == null) {
+            packageUnit.getObject().setProperties(new Properties());
+        }
 
-		List<File> substVarFiles = getAllSubstVarFiles();
-		for (File substVarFile : substVarFiles) {
-			SubstVarMarshaller substVarMarshaller;
-			try {
-				substVarMarshaller = new SubstVarMarshaller(substVarFile);
+        for (PropertyType property : moduleComposite.getObject().getProperty()) {
+            Property p = new Property();
+            String scalable = property.getOtherAttributes().get(new QName("scalable"));
+            p.setName("//" + moduleSymbolicName + "//" + property.getName());
+            p.setType("xs:" + property.getType().getLocalPart());
+            p.setVisibility("private");
+            p.setScalable(Boolean.parseBoolean(scalable));
+            p.setOverrideValue(false);
+            packageUnit.getObject().getProperties().getProperty().add(p);
+        }
 
-				GlobalVariables globalVariables = substVarMarshaller.getObject().getGlobalVariables();
-				if (globalVariables == null) {
-					substVarMarshaller.getObject().setGlobalVariables(new GlobalVariables());
-					globalVariables = substVarMarshaller.getObject().getGlobalVariables();
-				}
+        List<File> substVarFiles = getAllSubstVarFiles();
+        for (File substVarFile : substVarFiles) {
+            SubstVarMarshaller substVarMarshaller;
+            try {
+                substVarMarshaller = new SubstVarMarshaller(substVarFile);
 
-				for (PropertyType property : moduleComposite.getObject().getProperty()) {
-					String gvName = "//" + moduleSymbolicName + "//" + property.getName();
-					if (BW6Utils.globalVariableExists(globalVariables, gvName)) continue;
+                GlobalVariables globalVariables = substVarMarshaller.getObject().getGlobalVariables();
+                if (globalVariables == null) {
+                    substVarMarshaller.getObject().setGlobalVariables(new GlobalVariables());
+                    globalVariables = substVarMarshaller.getObject().getGlobalVariables();
+                }
 
-					GlobalVariable gv = new GlobalVariable();
-					String type = property.getType().getLocalPart();
-					if (type != null && type.length() > 0) {
-						type = type.substring(0, 1).toUpperCase() + type.substring(1); // Capitalize first letter
-					}
+                for (PropertyType property : moduleComposite.getObject().getProperty()) {
+                    String gvName = "//" + moduleSymbolicName + "//" + property.getName();
+                    if (BW6Utils.globalVariableExists(globalVariables, gvName)) continue;
 
-					gv.setName(gvName);
-					if (property.getName().endsWith("BW.HOST.NAME")) {
-						gv.setValue("localhost");
-					} else {
-						gv.setValue("");
-					}
-					gv.setDeploymentSettable(false);
-					gv.setServiceSettable(false);
-					gv.setType(type);
-					gv.setIsOverride(false);
+                    GlobalVariable gv = new GlobalVariable();
+                    String type = property.getType().getLocalPart();
+                    if (type != null && type.length() > 0) {
+                        type = type.substring(0, 1).toUpperCase() + type.substring(1); // Capitalize first letter
+                    }
 
-					globalVariables.getGlobalVariable().add(gv);
-				}
+                    gv.setName(gvName);
+                    if (property.getName().endsWith("BW.HOST.NAME")) {
+                        gv.setValue("localhost");
+                    } else {
+                        gv.setValue("");
+                    }
+                    gv.setDeploymentSettable(false);
+                    gv.setServiceSettable(false);
+                    gv.setType(type);
+                    gv.setIsOverride(false);
 
-				substVarMarshaller.save();
-			} catch (JAXBException | UnsupportedEncodingException | FileNotFoundException e) {
-				throw new MojoExecutionException(e.getLocalizedMessage(), e);
-			}
-		}
+                    globalVariables.getGlobalVariable().add(gv);
+                }
 
-		// replace UUID by really unique UUID and namespaces by really unique namespaces
-		File modulePath = new File(project.getFile().getParentFile(), moduleRelativePath);
+                substVarMarshaller.save();
+            } catch (JAXBException | SAXException | UnsupportedEncodingException | FileNotFoundException e) {
+                throw new MojoExecutionException(e.getLocalizedMessage(), e);
+            }
+        }
 
-		List<File> bwpFiles = getAllBWPFiles(modulePath);
+        // replace UUID by really unique UUID and namespaces by really unique namespaces
+        File modulePath = new File(project.getFile().getParentFile(), moduleRelativePath);
 
-		for (File bwpFile : bwpFiles) {
-			// first replace all UUID ending by 123456789000
-			String pattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-123456789000";
-			Integer uuidCount = 0;
-			try {
-				uuidCount = Utils.countMatchesInFile(bwpFile, pattern);
-			} catch (IOException e) {
-				continue;
-			}
+        List<File> bwpFiles = getAllBWPFiles(modulePath);
 
-			ReplaceRegExp replaceRegExp;
-			for (int i = 0; i < uuidCount; i++) {
-				replaceRegExp = new ReplaceRegExp();
-				replaceRegExp.setFile(bwpFile);
-				replaceRegExp.setMatch(pattern);
-				replaceRegExp.setReplace(UUID.randomUUID().toString());
-				replaceRegExp.setByLine(false);
-				replaceRegExp.execute();
-			}
+        for (File bwpFile : bwpFiles) {
+            // first replace all UUID ending by 123456789000
+            String pattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-123456789000";
+            Integer uuidCount = 0;
+            try {
+                uuidCount = Utils.countMatchesInFile(bwpFile, pattern);
+            } catch (IOException e) {
+                continue;
+            }
 
-			// then replace all namespace ending by /1234567890
-			String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-			replaceRegExp = new ReplaceRegExp();
-			replaceRegExp.setFile(bwpFile);
-			replaceRegExp.setMatch("http:\\/\\/xmlns\\.example\\.com\\/1234567890");
-			replaceRegExp.setReplace("http://xmlns.example.com/" + timeStamp);
-			replaceRegExp.setByLine(true);
-			replaceRegExp.execute();
-		}
+            ReplaceRegExp replaceRegExp;
+            for (int i = 0; i < uuidCount; i++) {
+                replaceRegExp = new ReplaceRegExp();
+                replaceRegExp.setFile(bwpFile);
+                replaceRegExp.setMatch(pattern);
+                replaceRegExp.setReplace(UUID.randomUUID().toString());
+                replaceRegExp.setByLine(false);
+                replaceRegExp.execute();
+            }
 
-		getLog().info("Adding module '" + moduleSymbolicName + ":" + moduleVersion + "' in application.");
+            // then replace all namespace ending by /1234567890
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            replaceRegExp = new ReplaceRegExp();
+            replaceRegExp.setFile(bwpFile);
+            replaceRegExp.setMatch("http:\\/\\/xmlns\\.example\\.com\\/1234567890");
+            replaceRegExp.setReplace("http://xmlns.example.com/" + timeStamp);
+            replaceRegExp.setByLine(true);
+            replaceRegExp.execute();
+        }
 
-		addModuleInApplication();
-		removeParentIfApplication();
+        getLog().info("Adding module '" + moduleSymbolicName + ":" + moduleVersion + "' in application.");
 
-		return true;
-	}
+        addModuleInApplication();
+        removeParentIfApplication();
 
-	private void removeParentIfApplication() throws MojoExecutionException {
-		try {
-			if (BW6LifecycleParticipant.hasBadParentDefinition(project, moduleRelativePath)) {
-				Model moduleModel = POMManager.getModelOfModule(project, moduleRelativePath);
-				File modulePom = POMManager.getPomOfModule(project.getFile(), moduleRelativePath);
+        return true;
+    }
 
-				getLog().info("Removing parent from '" + moduleModel.getGroupId() + ":" + moduleModel.getArtifactId() + ":" + moduleModel.getVersion() + ":" + moduleModel.getPackaging() + "'");
-				POMManager.removeParent(modulePom);
-			}
-		} catch (IOException | XmlPullParserException e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
-	}
+    private void removeParentIfApplication() throws MojoExecutionException {
+        try {
+            if (BW6LifecycleParticipant.hasBadParentDefinition(project, moduleRelativePath)) {
+                Model moduleModel = POMManager.getModelOfModule(project, moduleRelativePath);
+                File modulePom = POMManager.getPomOfModule(project.getFile(), moduleRelativePath);
 
-	private void addModuleInApplication() throws MojoExecutionException {
-		try {
-			if (project.getFile() != null && project.getFile().exists()) {
-				POMManager.addProjectAsModule(project.getFile(), moduleRelativePath, null, true);
-			}
-		} catch (IOException | XmlPullParserException e) {
-			throw new MojoExecutionException(e.getLocalizedMessage(), e);
-		}
-	}
+                getLog().info("Removing parent from '" + moduleModel.getGroupId() + ":" + moduleModel.getArtifactId() + ":" + moduleModel.getVersion() + ":" + moduleModel.getPackaging() + "'");
+                POMManager.removeParent(modulePom);
+            }
+        } catch (IOException | XmlPullParserException e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
+    }
+
+    private void addModuleInApplication() throws MojoExecutionException {
+        try {
+            if (project.getFile() != null && project.getFile().exists()) {
+                POMManager.addProjectAsModule(project.getFile(), moduleRelativePath, null, true);
+            }
+        } catch (IOException | XmlPullParserException e) {
+            throw new MojoExecutionException(e.getLocalizedMessage(), e);
+        }
+    }
 
 }

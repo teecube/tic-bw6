@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,6 @@
  */
 package t3.tic.bw6;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -35,13 +23,20 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.eclipse.tycho.core.resolver.shared.IncludeSourceMode;
 import org.eclipse.tycho.p2.target.facade.TargetDefinition.Location;
-
 import t3.AdvancedMavenLifecycleParticipant;
 import t3.CommonTIBCOMojo;
 import t3.plugin.annotations.GlobalParameter;
 import t3.tic.bw6.osgi.OSGIEnabled;
 import t3.tic.bw6.osgi.TargetDefinitionFile;
 import t3.tic.bw6.osgi.TargetDefinitionFile.OtherLocation;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
 
 /**
  *
@@ -50,154 +45,154 @@ import t3.tic.bw6.osgi.TargetDefinitionFile.OtherLocation;
  */
 public abstract class BW6CommonMojo extends CommonTIBCOMojo {
 
-	/* BW */
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwVersion, description = BW6MojoInformation.BW6.bwVersion_description, category = BW6MojoInformation.BW6.category, required = true, valueGuessedByDefault = false)
-	protected String tibcoBW6Version;
+    /* BW */
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwVersion, description = BW6MojoInformation.BW6.bwVersion_description, category = BW6MojoInformation.BW6.category, required = true, valueGuessedByDefault = false)
+    protected String tibcoBW6Version;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bw6P2Repository, defaultValue = BW6MojoInformation.BW6.bw6P2Repository_default, description = BW6MojoInformation.BW6.bw6P2Repository_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6P2Repository;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bw6P2Repository, defaultValue = BW6MojoInformation.BW6.bw6P2Repository_default, description = BW6MojoInformation.BW6.bw6P2Repository_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6P2Repository;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.projectP2Repository, defaultValue = BW6MojoInformation.BW6.projectP2Repository_default, description = BW6MojoInformation.BW6.projectP2Repository_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoMavenP2Repository;
+    @GlobalParameter (property = BW6MojoInformation.BW6.projectP2Repository, defaultValue = BW6MojoInformation.BW6.projectP2Repository_default, description = BW6MojoInformation.BW6.projectP2Repository_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoMavenP2Repository;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwHome, defaultValue = BW6MojoInformation.BW6.bwHome_default, description = BW6MojoInformation.BW6.bwHome_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6Home;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwHome, defaultValue = BW6MojoInformation.BW6.bwHome_default, description = BW6MojoInformation.BW6.bwHome_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6Home;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwBin, defaultValue = BW6MojoInformation.BW6.bwBin_default, description = BW6MojoInformation.BW6.bwBin_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6Bin;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwBin, defaultValue = BW6MojoInformation.BW6.bwBin_default, description = BW6MojoInformation.BW6.bwBin_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6Bin;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwAdmin, defaultValue = BW6MojoInformation.BW6.bwAdmin_default, description = BW6MojoInformation.BW6.bwAdmin_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6Admin;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwAdmin, defaultValue = BW6MojoInformation.BW6.bwAdmin_default, description = BW6MojoInformation.BW6.bwAdmin_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6Admin;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwAdminTRA, defaultValue = BW6MojoInformation.BW6.bwAdminTRA_default, description = BW6MojoInformation.BW6.bwAdminTRA_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6AdminTRA;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwAdminTRA, defaultValue = BW6MojoInformation.BW6.bwAdminTRA_default, description = BW6MojoInformation.BW6.bwAdminTRA_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6AdminTRA;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwInstall, defaultValue = BW6MojoInformation.BW6.bwInstall_default, description = BW6MojoInformation.BW6.bwInstall_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6Install;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwInstall, defaultValue = BW6MojoInformation.BW6.bwInstall_default, description = BW6MojoInformation.BW6.bwInstall_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6Install;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.bwInstallTRA, defaultValue = BW6MojoInformation.BW6.bwInstallTRA_default, description = BW6MojoInformation.BW6.bwInstallTRA_description, category = BW6MojoInformation.BW6.category)
-	protected File tibcoBW6InstallTRA;
+    @GlobalParameter (property = BW6MojoInformation.BW6.bwInstallTRA, defaultValue = BW6MojoInformation.BW6.bwInstallTRA_default, description = BW6MojoInformation.BW6.bwInstallTRA_description, category = BW6MojoInformation.BW6.category)
+    protected File tibcoBW6InstallTRA;
 
-	@GlobalParameter (property = BW6MojoInformation.Studio.studioVersion, description = BW6MojoInformation.Studio.studioVersion_description, required = true, category = BW6MojoInformation.Studio.category)
-	protected String businessStudioVersion;
+    @GlobalParameter (property = BW6MojoInformation.Studio.studioVersion, description = BW6MojoInformation.Studio.studioVersion_description, required = true, category = BW6MojoInformation.Studio.category)
+    protected String businessStudioVersion;
 
-	@GlobalParameter (property = BW6MojoInformation.Studio.studioHome, defaultValue = BW6MojoInformation.Studio.studioHome_default, description = BW6MojoInformation.Studio.studioHome_description, required = true, category = BW6MojoInformation.Studio.category)
-	protected File businessStudioHome;
+    @GlobalParameter (property = BW6MojoInformation.Studio.studioHome, defaultValue = BW6MojoInformation.Studio.studioHome_default, description = BW6MojoInformation.Studio.studioHome_description, required = true, category = BW6MojoInformation.Studio.category)
+    protected File businessStudioHome;
 
-	@GlobalParameter (property = BW6MojoInformation.Studio.studio, defaultValue = BW6MojoInformation.Studio.studio_default, description = BW6MojoInformation.Studio.studio_description, required = true, category = BW6MojoInformation.Studio.category)
-	protected File businessStudio;
+    @GlobalParameter (property = BW6MojoInformation.Studio.studio, defaultValue = BW6MojoInformation.Studio.studio_default, description = BW6MojoInformation.Studio.studio_description, required = true, category = BW6MojoInformation.Studio.category)
+    protected File businessStudio;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.eclipsePlatformVersion, defaultValue = BW6MojoInformation.BW6.eclipsePlatformVersion_default, required = true, category = BW6MojoInformation.BW6.category)
-	protected String eclipsePlatformVersion;
+    @GlobalParameter (property = BW6MojoInformation.BW6.eclipsePlatformVersion, defaultValue = BW6MojoInformation.BW6.eclipsePlatformVersion_default, required = true, category = BW6MojoInformation.BW6.category)
+    protected String eclipsePlatformVersion;
 
-	@GlobalParameter (property = BW6MojoInformation.BW6.eclipsePlatform, defaultValue = BW6MojoInformation.BW6.eclipsePlatform_default, required = true, category = BW6MojoInformation.BW6.category)
-	protected File eclipsePlatformHome;
+    @GlobalParameter (property = BW6MojoInformation.BW6.eclipsePlatform, defaultValue = BW6MojoInformation.BW6.eclipsePlatform_default, required = true, category = BW6MojoInformation.BW6.category)
+    protected File eclipsePlatformHome;
 
-	private File thorLaunchDirectory = null;
-	private ArrayList<File> designLocations = null;
+    private File thorLaunchDirectory = null;
+    private ArrayList<File> designLocations = null;
 
-	public final static String BW6_APPLICATION_PACKAGING = "bw6-application";
-	public final static String BW6_APP_MODULE_PACKAGING = "bw6-app-module";
-	public final static String BW6_SHARED_MODULE_PACKAGING = "bw6-shared-module";
+    public final static String BW6_APPLICATION_PACKAGING = "bw6-application";
+    public final static String BW6_APP_MODULE_PACKAGING = "bw6-app-module";
+    public final static String BW6_SHARED_MODULE_PACKAGING = "bw6-shared-module";
 
-	public final static String JAR_EXTENSION = ".jar";
+    public final static String JAR_EXTENSION = ".jar";
 
-	@Override
-	protected AdvancedMavenLifecycleParticipant getLifecycleParticipant() throws MojoExecutionException {
-		return new BW6LifecycleParticipant();
-	}
+    @Override
+    protected AdvancedMavenLifecycleParticipant getLifecycleParticipant() {
+        return new BW6LifecycleParticipant();
+    }
 
-	protected int executeBusinessStudio(List<String> arguments, File workingDirectory, String errorMessage, boolean fork, boolean synchronous) throws MojoExecutionException, IOException {
-		return executeBinary(businessStudio, arguments, workingDirectory, errorMessage, fork, synchronous);
-	}
+    protected int executeBusinessStudio(List<String> arguments, File workingDirectory, String errorMessage, boolean fork, boolean synchronous) throws MojoExecutionException, IOException {
+        return executeBinary(businessStudio, arguments, workingDirectory, errorMessage, fork, synchronous);
+    }
 
-	/**
-	 * <p>
-	 * Default behaviour is synchronous and no fork.
-	 * </p>
-	 */
-	protected int executeBusinessStudio(ArrayList<String> arguments, File workingDirectory, String errorMessage) throws IOException, MojoExecutionException {
-		return executeBusinessStudio(arguments, workingDirectory, errorMessage, false, true);
-	}
+    /**
+     * <p>
+     * Default behaviour is synchronous and no fork.
+     * </p>
+     */
+    protected int executeBusinessStudio(ArrayList<String> arguments, File workingDirectory, String errorMessage) throws IOException, MojoExecutionException {
+        return executeBusinessStudio(arguments, workingDirectory, errorMessage, false, true);
+    }
 
-	/* Thor launcher properties */
+    /* Thor launcher properties */
 
-	protected File getThorLaunchDirectory() throws FileNotFoundException {
-		if (thorLaunchDirectory != null) {
-			return thorLaunchDirectory;
-		}
+    protected File getThorLaunchDirectory() throws FileNotFoundException {
+        if (thorLaunchDirectory != null) {
+            return thorLaunchDirectory;
+        }
 
-		File bundlePoolPlugins = new File(eclipsePlatformHome, "org.eclipse.equinox.p2.touchpoint.eclipse/plugins");
-		IOFileFilter wildcardFilter = new WildcardFileFilter("com.tibco.bw.thor.launch_*");
+        File bundlePoolPlugins = new File(eclipsePlatformHome, "org.eclipse.equinox.p2.touchpoint.eclipse/plugins");
+        IOFileFilter wildcardFilter = new WildcardFileFilter("com.tibco.bw.thor.launch_*");
 
-		Collection<File> thorLaunchDirectories = FileUtils.listFilesAndDirs(bundlePoolPlugins, wildcardFilter, wildcardFilter);
-		if (thorLaunchDirectories.size() < 2) {
-			throw new FileNotFoundException("Unable to find Thor Launch directory");
-		}
+        Collection<File> thorLaunchDirectories = FileUtils.listFilesAndDirs(bundlePoolPlugins, wildcardFilter, wildcardFilter);
+        if (thorLaunchDirectories.size() < 2) {
+            throw new FileNotFoundException("Unable to find Thor Launch directory");
+        }
 
-		thorLaunchDirectory = thorLaunchDirectories.toArray(new File[0])[1];
-		return thorLaunchDirectory;
-	}
+        thorLaunchDirectory = thorLaunchDirectories.toArray(new File[0])[1];
+        return thorLaunchDirectory;
+    }
 
-	protected File getThorLaunchDesignTarget() throws FileNotFoundException {
-		return new File(getThorLaunchDirectory(), "design.target");
-	}
+    protected File getThorLaunchDesignTarget() throws FileNotFoundException {
+        return new File(getThorLaunchDirectory(), "design.target");
+    }
 
-	protected List<File> getDesignLocations() throws FileNotFoundException {
-		if (designLocations != null) {
-			return designLocations;
-		}
+    protected List<File> getDesignLocations() throws FileNotFoundException {
+        if (designLocations != null) {
+            return designLocations;
+        }
 
-		designLocations = new ArrayList<File>();
+        designLocations = new ArrayList<File>();
 
-		TargetDefinitionFile targetDefinitionFile = TargetDefinitionFile.read(getThorLaunchDesignTarget(), IncludeSourceMode.force);
-		for (Location location : targetDefinitionFile.getLocations()) {
-			if (location instanceof OtherLocation) {
-				OtherLocation otherLocation = (TargetDefinitionFile.OtherLocation) location;
-				File actualLocation = new File(otherLocation.getPath().replaceAll("\\$\\{eclipse_home\\}", businessStudioHome.getAbsolutePath().replace("\\", "/")));
-				if (actualLocation.exists()) {
-					designLocations.add(actualLocation);
-				}
-			}
-		}
+        TargetDefinitionFile targetDefinitionFile = TargetDefinitionFile.read(getThorLaunchDesignTarget(), IncludeSourceMode.force);
+        for (Location location : targetDefinitionFile.getLocations()) {
+            if (location instanceof OtherLocation) {
+                OtherLocation otherLocation = (TargetDefinitionFile.OtherLocation) location;
+                File actualLocation = new File(otherLocation.getPath().replaceAll("\\$\\{eclipse_home\\}", businessStudioHome.getAbsolutePath().replace("\\", "/")));
+                if (actualLocation.exists()) {
+                    designLocations.add(actualLocation);
+                }
+            }
+        }
 
-		return designLocations;
-	}
+        return designLocations;
+    }
 
-	/* OSGI environment loader (independently of Eclipse platform) */
-	protected static Map<String, ClassLoader> osgiEnvironments = new HashMap<String, ClassLoader>();
+    /* OSGI environment loader (independently of Eclipse platform) */
+    protected static Map<String, ClassLoader> osgiEnvironments = new HashMap<String, ClassLoader>();
 
-	private ClassLoader loadOSGIEnvironment(List<File> osgiDefaultClasspathElements) throws MalformedURLException, DependencyResolutionRequiredException {
-		List<URL> osgiClasspathElements = new ArrayList<URL>();
+    private ClassLoader loadOSGIEnvironment(List<File> osgiDefaultClasspathElements) throws MalformedURLException, DependencyResolutionRequiredException {
+        List<URL> osgiClasspathElements = new ArrayList<URL>();
 
-		for (File osgiDefaultClasspathElementFile : osgiDefaultClasspathElements) {
-			if (osgiDefaultClasspathElementFile.exists()) {
-				osgiClasspathElements.add(osgiDefaultClasspathElementFile.toURI().toURL());
-			}
-		}
+        for (File osgiDefaultClasspathElementFile : osgiDefaultClasspathElements) {
+            if (osgiDefaultClasspathElementFile.exists()) {
+                osgiClasspathElements.add(osgiDefaultClasspathElementFile.toURI().toURL());
+            }
+        }
 
-		URLClassLoader osgiClassloader = new URLClassLoader(osgiClasspathElements.toArray(new URL[0]), this.getClass().getClassLoader());
-		return osgiClassloader;
-	}
+        URLClassLoader osgiClassloader = new URLClassLoader(osgiClasspathElements.toArray(new URL[0]), this.getClass().getClassLoader());
+        return osgiClassloader;
+    }
 
-	protected ClassLoader getOSGIClassLoader() throws MojoExecutionException {
-		if (!(this instanceof OSGIEnabled)) {
-			throw new MojoExecutionException("This class does not support OSGI environment loading", new UnsupportedOperationException());
-		}
+    protected ClassLoader getOSGIClassLoader() throws MojoExecutionException {
+        if (!(this instanceof OSGIEnabled)) {
+            throw new MojoExecutionException("This class does not support OSGI environment loading", new UnsupportedOperationException());
+        }
 
-		ClassLoader osgiEnvironmentForCurrentClass = osgiEnvironments.get(this.getClass().getCanonicalName());
-		if (osgiEnvironmentForCurrentClass != null) {
-			return osgiEnvironmentForCurrentClass;
-		}
+        ClassLoader osgiEnvironmentForCurrentClass = osgiEnvironments.get(this.getClass().getCanonicalName());
+        if (osgiEnvironmentForCurrentClass != null) {
+            return osgiEnvironmentForCurrentClass;
+        }
 
-		try {
-			osgiEnvironmentForCurrentClass = loadOSGIEnvironment(((OSGIEnabled) this).getOSGIClasspathElements());
-		} catch (MalformedURLException | DependencyResolutionRequiredException e) {
-			throw new MojoExecutionException("Unable to load OSGI environment", e);
-		}
+        try {
+            osgiEnvironmentForCurrentClass = loadOSGIEnvironment(((OSGIEnabled) this).getOSGIClasspathElements());
+        } catch (MalformedURLException | DependencyResolutionRequiredException e) {
+            throw new MojoExecutionException("Unable to load OSGI environment", e);
+        }
 
-		osgiEnvironments.put(this.getClass().getCanonicalName(), osgiEnvironmentForCurrentClass);
-		return osgiEnvironmentForCurrentClass;
-	}
+        osgiEnvironments.put(this.getClass().getCanonicalName(), osgiEnvironmentForCurrentClass);
+        return osgiEnvironmentForCurrentClass;
+    }
 
 }

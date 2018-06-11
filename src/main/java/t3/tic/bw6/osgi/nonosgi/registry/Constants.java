@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,9 @@ package t3.tic.bw6.osgi.nonosgi.registry;
  */
 public class Constants implements org.osgi.framework.Constants {
 
-	/** Bundle manifest name */
-	public static final String OSGI_BUNDLE_MANIFEST = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
+    /** Bundle manifest name */
+    public static final String OSGI_BUNDLE_MANIFEST = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
-	public static final String PLUGIN_MANIFEST = "plugin.xml"; //$NON-NLS-1$
+    public static final String PLUGIN_MANIFEST = "plugin.xml"; //$NON-NLS-1$
 
 }

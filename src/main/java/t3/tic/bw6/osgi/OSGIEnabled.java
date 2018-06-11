@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2016-2017 teecube
+ * (C) Copyright 2016-2018 teecube
  * (http://teecu.be) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,10 @@
  */
 package t3.tic.bw6.osgi;
 
+import org.apache.maven.plugin.MojoExecutionException;
+
 import java.io.File;
 import java.util.List;
-
-import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  *
@@ -28,6 +28,6 @@ import org.apache.maven.plugin.MojoExecutionException;
  */
 public interface OSGIEnabled {
 
-	public List<File> getOSGIClasspathElements() throws MojoExecutionException;
+    public List<File> getOSGIClasspathElements() throws MojoExecutionException;
 
 }

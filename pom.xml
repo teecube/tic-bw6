@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.teecube.tic</groupId>
 		<artifactId>tic</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.6-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tic-bw6</artifactId>
@@ -31,6 +31,8 @@
 
 		<t3.site.globalDocumentation.bootstrapClass>t3.tic.bw6.BW6LifecycleParticipant</t3.site.globalDocumentation.bootstrapClass>
 		<t3.site.globalDocumentation.sampleProfileCommandLineGenerator><![CDATA[<p><em>To generate automatically a sample profile for an environment called <strong>BW6</strong> and <strong>add it automatically to the settings.xml of Maven</strong>, run : </em></p><div class="command" title="Sample profile for Maven settings.xml generator"><span id="command">mvn toe:bw6-configure</span><span class="argument">-Dtibco.installation.environmentName=BW6</span><span class="argument">-Dtibco.configuration.writeToSettings=true</span></div>]]></t3.site.globalDocumentation.sampleProfileCommandLineGenerator>
+
+		<tycho.version>1.1.0</tycho.version>
 	</properties>
 
 	<build>
