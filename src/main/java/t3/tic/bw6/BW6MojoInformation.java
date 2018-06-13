@@ -180,7 +180,7 @@ public class BW6MojoInformation {
         public static final String studioProxyArtifactId = "tibco.bw6.studio.proxyArtifactId";
         public static final String studioProxyArtifactId_default = "tic-bw6-studio-proxy-site";
         public static final String studioProxyVersion = "tibco.bw6.studio.proxyVersion";
-        public static final String studioProxyVersion_default = "1";
+        public static final String studioProxyVersion_default = "1"; // must be sync with <studio.proxy.version> property in POM
         public static final String studioProxyFeature = "tibco.bw6.studio.proxyFeature";
         public static final String studioProxyFeature_default = "tic-bw6-studio-proxy-feature.feature.group";
 
