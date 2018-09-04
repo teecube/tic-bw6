@@ -204,6 +204,10 @@
 		</dependency>
 	</dependencies>
 
+	<prerequisites>
+		<maven>3.5.0</maven>
+	</prerequisites>
+
 	<scm>
 		<connection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</connection>
 		<developerConnection>scm:git:https://git.teecu.be/teecube/tic-bw6.git</developerConnection>
