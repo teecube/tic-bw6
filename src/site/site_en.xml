@@ -29,7 +29,7 @@
 			<protocolRelativeURLs>false</protocolRelativeURLs>
 			<absoluteResourceURL>${siteURL}</absoluteResourceURL>
 
-			<slogan><![CDATA[${ticSlogan}]]></slogan>
+			<slogan><![CDATA[${this.ticSlogan}]]></slogan>
 
 			<bottomNav maxSpan="9">
 				<column>${ticName} - ${ticBW6MavenName}</column>
@@ -39,7 +39,7 @@
 
 			<bottomDescription>
 				<![CDATA[
-				${ecosystemSumUp}
+				${this.ecosystemSumUp}
 				]]>
 			</bottomDescription>
 
@@ -57,7 +57,7 @@
 	<bannerLeft>
 		<name>
           <![CDATA[
-          ${ticDisplayedName} - ${ticDisplayedBW6MavenName}
+          ${this.ticDisplayedName} - ${this.ticDisplayedBW6MavenName}
           ]]>
 		</name>
 		<href>./index.html</href>
