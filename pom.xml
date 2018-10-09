@@ -77,8 +77,15 @@
 									}
 								}
 
-								setArchetypeVersion((project.properties["tacGroupId"] + ".archetypes." + "default-bw6-application").replaceAll("\\.", "/"), "default-bw6-application.version")
-								setArchetypeVersion((project.properties["tacGroupId"] + ".archetypes." + "default-bw6-app-module").replaceAll("\\.", "/"), "default-bw6-app-module.version")
+								bw6ApplicationProperty = (project.properties["tacGroupId"] + ".archetypes." + "default-bw6-application").replaceAll("\\.", "/")
+								bw6AppModuleProperty = (project.properties["tacGroupId"] + ".archetypes." + "default-bw6-app-module").replaceAll("\\.", "/")
+                                try {
+									setArchetypeVersion(bw6ApplicationProperty, "default-bw6-application.version")
+									setArchetypeVersion(bw6AppModuleProperty, "default-bw6-app-module.version")
+                                } catch (UnknownHostException) {
+									project.properties["$bw6ApplicationProperty"] = "unknown"
+									project.properties["bw6AppModuleProperty"] = "unknown"
+								}
 							</source>
 						</configuration>
 					</execution>
